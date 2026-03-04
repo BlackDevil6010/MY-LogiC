@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Contract AI</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .auth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 480px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .auth-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-header p {
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] .form-input {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .auth-switch a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .auth-switch a:hover {
+            color: var(--primary-hover);
+        }
+
+        /* Form Animation Transition */
+        #register-form {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Abstract Background Elements */
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: #6366f1;
+            top: -100px;
+            left: -100px;
+            animation: float 10s ease-in-out infinite alternate;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: #ec4899;
+            bottom: -50px;
+            right: -50px;
+            animation: float 8s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(30px, 50px) scale(1.1);
+            }
+        }
+    </style>
+</head>
+
+<body data-theme="dark">
+    <!-- Background Decor -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <div class="auth-container">
+        <div class="glass-panel auth-card">
+            <!-- Branding -->
+            <div class="logo" style="justify-content: center; margin-bottom: 2rem; cursor: pointer;" onclick="window.location.href='index.html'">
+                <div class="logo-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                    </svg>
+                </div>
+                <h2 style="font-family: 'Outfit', sans-serif; margin-bottom: 0; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Contract AI</h2>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="fade-in">
+                <div class="auth-header">
+                    <h1>Welcome Back</h1>
+                    <p>Enter your credentials to access Contract AI.</p>
+                </div>
+                <form id="form-login">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="login-email" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn primary auth-btn">Sign In</button>
+                </form>
+                <div class="auth-switch">
+                    Don't have an account? <a href="#" onclick="toggleForm('register')">Create one</a>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form">
+                <div class="auth-header">
+                    <h1>Create Account</h1>
+                    <p>Join Contract AI to start analyzing documents.</p>
+                </div>
+                <form id="form-register">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="reg-email" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="reg-password" class="form-input"
+                            placeholder="Choose a strong password" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn primary auth-btn">Sign Up</button>
+                </form>
+                <div class="auth-switch">
+                    Already have an account? <a href="#" onclick="toggleForm('login')">Sign in</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Notifications (reusing from app UI) -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        function toggleForm(type) {
+            const login = document.getElementById('login-form');
+            const register = document.getElementById('register-form');
+
+            if (type === 'register') {
+                login.style.display = 'none';
+                login.classList.remove('fade-in');
+                register.style.display = 'block';
+                register.classList.add('fade-in');
+                document.title = 'Register - Contract AI';
+            } else {
+                register.style.display = 'none';
+                register.classList.remove('fade-in');
+                login.style.display = 'block';
+                login.classList.add('fade-in');
+                document.title = 'Login - Contract AI';
+            }
+        }
+    </script>
+</body>
+
+</html>
