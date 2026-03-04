@@ -3,9 +3,6 @@ Flask-SQLAlchemy==3.1.1
 Flask-Cors==4.0.0
 
 SQLAlchemy==2.0.25
-tokenizers==0.15.2
-transformers==4.37.1
-torch>=2.0.0
 
 PyPDF2==3.0.1
 python-docx==1.1.0
