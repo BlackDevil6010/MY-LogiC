@@ -1081,19 +1081,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         async function initUserProfile() {
-            let email = localStorage.getItem('userEmail');
-            
-            if (!email) {
-                try {
-                    const res = await authFetch(`${API_BASE}/auth/current-user`);
-                    if (res && res.email) {
-                        email = res.email;
-                        localStorage.setItem('userEmail', email);
-                    }
-                } catch (err) {
-                    console.error('Failed to fetch user profile:', err);
+    let email = localStorage.getItem('userEmail');
+
+    if (!email) {
+        try {
+            const res = await authFetch(`${API_BASE}/auth/current-user`);
+
+            if (res) {
+                const data = await res.json();
+
+                if (data.email) {
+                    email = data.email;
+                    localStorage.setItem('userEmail', email);
                 }
             }
+        } catch (err) {
+            console.error('Failed to fetch user profile:', err);
+        }
+    }
+
+    if (email) {
+        document.getElementById('user-email-display').innerText = email;
+        document.getElementById('user-avatar').innerText = email.charAt(0).toUpperCase();
+    } else {
+        document.getElementById('user-email-display').innerText = 'User Account';
+        document.getElementById('user-avatar').innerText = 'U';
+    }
+}
 
             if (email) {
                 document.getElementById('user-email-display').innerText = email;
@@ -1628,5 +1642,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 </html>
-
 
