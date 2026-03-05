@@ -1037,11 +1037,7 @@
         <script>
 
 // Backend API URL
-const API_BASE =
-  window.location.hostname === "localhost"
-    ? "http://localhost:5000/api"
-    : "https://my-logic-production.up.railway.app/api";
-
+const API_BASE = "https://my-logic-production.up.railway.app/api";
 
 // State
 let currentContractId = null;
@@ -1057,7 +1053,6 @@ const fileInput = document.getElementById('file-input');
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Check authentication
     const token = localStorage.getItem('token');
 
     if (!token) {
@@ -1634,3 +1629,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 </html>
+
