@@ -1034,37 +1034,45 @@
     <div id="toast-container" class="toast-container"></div>
 
     <script>
-        const API_BASE = 'http://localhost:5000/api';
+        <script>
 
-        // State
-        let currentContractId = null;
-        let charts = {};
+// Backend API URL
+const API_BASE =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000/api"
+    : "https://my-logic-production.up.railway.app/api";
 
-        // DOM Elements
-        const views = document.querySelectorAll('.view-section');
-        const navItems = document.querySelectorAll('.nav-item');
-        const themeSwitch = document.getElementById('theme-switch');
-        const dropZone = document.getElementById('drop-zone');
-        const fileInput = document.getElementById('file-input');
 
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check authentication
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'auth.html';
-                return;
-            }
+// State
+let currentContractId = null;
+let charts = {};
 
-            initNavigation();
-            initTheme();
-            initDragAndDrop();
-            initLogout();
-            initUserProfile();
+// DOM Elements
+const views = document.querySelectorAll('.view-section');
+const navItems = document.querySelectorAll('.nav-item');
+const themeSwitch = document.getElementById('theme-switch');
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
 
-            // Load history initially
-            loadHistory();
-        });
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Check authentication
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+        window.location.href = 'auth.html';
+        return;
+    }
+
+    initNavigation();
+    initTheme();
+    initDragAndDrop();
+    initLogout();
+    initUserProfile();
+
+    loadHistory();
+});
 
         function initLogout() {
             const logoutBtn = document.getElementById('btn-logout');
@@ -1623,5 +1631,6 @@
         document.head.appendChild(style);
     </script>
 </body>
+
 
 </html>
