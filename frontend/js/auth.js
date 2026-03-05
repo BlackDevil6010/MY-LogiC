@@ -1,76 +1,103 @@
-const API_BASE = 'http://localhost:5000/api';
+// Automatically choose API based on environment
+const API_BASE =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000/api"
+    : "https://my-logic-production.up.railway.app/api";
 
-document.addEventListener('DOMContentLoaded', () => {
-    // If already logged in, redirect to dashboard
-    if (localStorage.getItem('token')) {
-        window.location.href = 'index.html';
-    }
+document.addEventListener("DOMContentLoaded", () => {
+  // If already logged in redirect to dashboard
+  if (localStorage.getItem("token")) {
+    window.location.href = "index.html";
+  }
 
-    const loginForm = document.getElementById('form-login');
-    const registerForm = document.getElementById('form-register');
+  const loginForm = document.getElementById("form-login");
+  const registerForm = document.getElementById("form-register");
 
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
+  // LOGIN
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-            await handleAuth(`${API_BASE}/auth/login`, { email, password }, 'Login successful!');
-        });
-    }
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
 
-    if (registerForm) {
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('reg-email').value;
-            const password = document.getElementById('reg-password').value;
+      await handleAuth(
+        `${API_BASE}/auth/login`,
+        { email, password },
+        "Login successful!"
+      );
+    });
+  }
 
-            await handleAuth(`${API_BASE}/auth/register`, { email, password }, 'Registration successful! Logging in...');
-        });
-    }
+  // REGISTER
+  if (registerForm) {
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("reg-email").value;
+      const password = document.getElementById("reg-password").value;
+
+      await handleAuth(
+        `${API_BASE}/auth/register`,
+        { email, password },
+        "Registration successful! Logging in..."
+      );
+    });
+  }
 });
 
+// AUTH FUNCTION
 async function handleAuth(url, credentials, successMessage) {
-    try {
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(credentials)
-        });
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    });
 
-        const data = await res.json();
+    const data = await res.json();
 
-        if (!res.ok) {
-            throw new Error(data.error || 'Authentication failed');
-        }
-
-        // Save token and user email 
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('userEmail', data.email);
-        showToast(successMessage, 'success');
-
-        // Redirect to main dashboard
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1000);
-
-    } catch (err) {
-        showToast(err.message, 'error');
+    if (!res.ok) {
+      throw new Error(data.error || "Authentication failed");
     }
+
+    // Save token & user email
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("userEmail", data.email);
+
+    showToast(successMessage, "success");
+
+    // Redirect to dashboard
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 1000);
+  } catch (err) {
+    showToast(err.message, "error");
+  }
 }
 
-function showToast(message, type = 'success') {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
+// TOAST NOTIFICATION
+function showToast(message, type = "success") {
+  const container = document.getElementById("toast-container");
 
-    const icon = type === 'success' ? '✅' : '❌';
-    toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+  if (!container) return;
 
-    container.appendChild(toast);
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
 
-    setTimeout(() => {
-        toast.style.animation = 'fadeOut 0.3s ease-in forwards';
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
+  const icon = type === "success" ? "✅" : "❌";
+
+  toast.innerHTML = `
+        <span>${icon}</span>
+        <span>${message}</span>
+    `;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = "fadeOut 0.3s ease-in forwards";
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
 }
