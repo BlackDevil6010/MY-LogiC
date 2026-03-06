@@ -50,12 +50,6 @@ def create_app():
     # Create Tables Safely
     # ==============================
 
-    with app.app_context():
-        try:
-            db.create_all()
-            print("✅ Database connected successfully")
-        except Exception as e:
-            print("❌ Database connection failed:", e)
 
     # ==============================
     # Health Check Route
@@ -80,3 +74,4 @@ if __name__ == "__main__":
     app = create_app()
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
+
