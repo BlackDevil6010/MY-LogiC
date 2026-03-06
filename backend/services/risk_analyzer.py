@@ -15,16 +15,14 @@ class RiskAnalyzer:
     def __init__(self):
 
         self.api_url = "https://api-inference.huggingface.co/models/nlpaueb/legal-bert-base-uncased"
+token = os.getenv("HF_TOKEN")
 
-        hf_token = os.getenv("HF_TOKEN")
+if not token:
+    raise RuntimeError("HF_TOKEN not set in environment variables")
 
-        if not hf_token:
-            print("⚠ HF_TOKEN not set. AI analysis disabled.")
-            self.headers = None
-        else:
-            self.headers = {
-                "Authorization": f"Bearer {hf_token}"
-            }
+self.headers = {
+    "Authorization": f"Bearer {token}"
+}
 
         self.clause_mappings = {
             "indemnification": ["indemnification", "indemnify", "hold harmless", "defense", "reimburse"],
@@ -156,3 +154,4 @@ class RiskAnalyzer:
             })
 
         return results
+
