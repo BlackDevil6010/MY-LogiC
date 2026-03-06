@@ -1,11 +1,11 @@
-// Automatically choose API based on environment
-const API_BASE =
-  window.location.hostname === "localhost"
-    ? "http://localhost:5000/api"
-    : "https://my-logic-production.up.railway.app/api";
+// 🔥 Use fixed production backend URL (remove auto detection for now)
+const API_BASE = "https://my-logic-production.up.railway.app/api";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // If already logged in redirect to dashboard
+
+  console.log("Auth JS Loaded");
+
+  // Redirect if already logged in
   if (localStorage.getItem("token")) {
     window.location.href = "index.html";
   }
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// AUTH FUNCTION
+// 🔥 SAFE AUTH FUNCTION
 async function handleAuth(url, credentials, successMessage) {
   try {
     const res = await fetch(url, {
@@ -57,31 +57,39 @@ async function handleAuth(url, credentials, successMessage) {
       body: JSON.stringify(credentials),
     });
 
+    // 🔥 Check if response is JSON before parsing
+    const contentType = res.headers.get("content-type");
+
+    if (!contentType || !contentType.includes("application/json")) {
+      const text = await res.text();
+      console.error("Server returned non-JSON response:", text);
+      throw new Error("Server error. Backend might be down.");
+    }
+
     const data = await res.json();
 
     if (!res.ok) {
       throw new Error(data.error || "Authentication failed");
     }
 
-    // Save token & user email
     localStorage.setItem("token", data.token);
     localStorage.setItem("userEmail", data.email);
 
     showToast(successMessage, "success");
 
-    // Redirect to dashboard
     setTimeout(() => {
       window.location.href = "index.html";
     }, 1000);
+
   } catch (err) {
+    console.error("Auth Error:", err);
     showToast(err.message, "error");
   }
 }
 
-// TOAST NOTIFICATION
+// TOAST
 function showToast(message, type = "success") {
   const container = document.getElementById("toast-container");
-
   if (!container) return;
 
   const toast = document.createElement("div");
