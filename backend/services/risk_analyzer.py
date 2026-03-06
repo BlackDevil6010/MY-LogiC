@@ -2,6 +2,7 @@ import re
 import requests
 import os
 
+
 class RiskAnalyzer:
     _instance = None
 
@@ -13,12 +14,17 @@ class RiskAnalyzer:
 
     def __init__(self):
 
-        # LegalBERT model hosted on Hugging Face
         self.api_url = "https://api-inference.huggingface.co/models/nlpaueb/legal-bert-base-uncased"
 
-        self.headers = {
-            "Authorization": f"Bearer {os.getenv('HF_TOKEN')}"
-        }
+        hf_token = os.getenv("HF_TOKEN")
+
+        if not hf_token:
+            print("⚠ HF_TOKEN not set. AI analysis disabled.")
+            self.headers = None
+        else:
+            self.headers = {
+                "Authorization": f"Bearer {hf_token}"
+            }
 
         self.clause_mappings = {
             "indemnification": ["indemnification", "indemnify", "hold harmless", "defense", "reimburse"],
@@ -39,14 +45,34 @@ class RiskAnalyzer:
         }
 
     def hf_classify(self, text):
+
+        if not self.headers:
+            return {"status": "AI disabled"}
+
         payload = {"inputs": text}
 
-        response = requests.post(self.api_url, headers=self.headers, json=payload)
+        try:
+            response = requests.post(
+                self.api_url,
+                headers=self.headers,
+                json=payload,
+                timeout=15  # VERY IMPORTANT
+            )
 
-        if response.status_code == 200:
-            return response.json()
+            if response.status_code == 200:
+                return response.json()
 
-        return {"error": "HuggingFace API error"}
+            return {
+                "error": "HuggingFace API error",
+                "status_code": response.status_code,
+                "response": response.text
+            }
+
+        except requests.exceptions.Timeout:
+            return {"error": "HuggingFace request timed out"}
+
+        except Exception as e:
+            return {"error": str(e)}
 
     def analyze_batch(self, clauses):
 
