@@ -1,16 +1,7 @@
 import os
 from flask import Flask, jsonify
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
-from flask_bcrypt import Bcrypt
-
-# =========================
-# Extensions
-# =========================
-db = SQLAlchemy()
-jwt = JWTManager()
-bcrypt = Bcrypt()
+from extensions import db, jwt, bcrypt
 
 
 def create_app():
@@ -52,7 +43,7 @@ def create_app():
     from models.models import User
 
     # =========================
-    # CREATE TABLES (VERY IMPORTANT)
+    # Create Tables
     # =========================
     with app.app_context():
         db.create_all()
@@ -64,7 +55,7 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
 
     # =========================
-    # Health Check
+    # Health Check Route
     # =========================
     @app.route("/")
     def health():
