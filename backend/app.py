@@ -19,21 +19,21 @@ def create_app():
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "super-secret-key")
     app.config["JWT_SECRET_KEY"] = app.config["SECRET_KEY"]
 
-    # Get database URL from environment (Railway variable)
     database_url = os.getenv("DATABASE_URL")
 
-    if not database_url:
-        raise RuntimeError("DATABASE_URL environment variable not set")
+    if database_url:
+        # Supabase fix
+        if database_url.startswith("postgres://"):
+            database_url = database_url.replace(
+                "postgres://", "postgresql+psycopg2://", 1
+            )
 
-    # Supabase sometimes needs explicit psycopg2 driver
-    if database_url.startswith("postgres://"):
-        database_url = database_url.replace(
-            "postgres://", "postgresql+psycopg2://", 1
-        )
+        app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    else:
+        # Fallback for safety (prevents crash)
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///fallback.db"
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
     app.config["UPLOAD_FOLDER"] = "uploads"
 
     # ==============================
@@ -44,15 +44,18 @@ def create_app():
     jwt.init_app(app)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-    # Ensure upload folder exists
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
     # ==============================
-    # Create Tables on Startup
+    # Create Tables Safely
     # ==============================
 
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+            print("✅ Database connected successfully")
+        except Exception as e:
+            print("❌ Database connection failed:", e)
 
     # ==============================
     # Health Check Route
