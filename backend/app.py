@@ -27,10 +27,8 @@ def create_app():
             database_url = database_url.replace(
                 "postgres://", "postgresql+psycopg2://", 1
             )
-
         app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     else:
-        # Fallback for safety (prevents crash)
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///fallback.db"
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -47,11 +45,6 @@ def create_app():
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
     # ==============================
-    # Create Tables Safely
-    # ==============================
-
-
-    # ==============================
     # Health Check Route
     # ==============================
 
@@ -66,12 +59,7 @@ def create_app():
     return app
 
 
-# ==============================
-# Run Locally
-# ==============================
-
 if __name__ == "__main__":
     app = create_app()
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
-
