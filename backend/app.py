@@ -8,25 +8,14 @@ def create_app():
     app = Flask(__name__)
 
     # =========================
-    # Configuration
+    # Basic Configuration
     # =========================
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "super-secret-key")
+    app.config["SECRET_KEY"] = "super-secret-key"
     app.config["JWT_SECRET_KEY"] = app.config["SECRET_KEY"]
+
+    # ✅ Local SQLite Database
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///local.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-    database_url = os.getenv("DATABASE_URL")
-
-    if database_url:
-        database_url = database_url.strip()
-
-        if database_url.startswith("postgres://"):
-            database_url = database_url.replace(
-                "postgres://", "postgresql+psycopg2://", 1
-            )
-
-        app.config["SQLALCHEMY_DATABASE_URI"] = database_url
-    else:
-        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///local.db"
 
     # =========================
     # Initialize Extensions
@@ -38,9 +27,9 @@ def create_app():
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # =========================
-    # Import Models (IMPORTANT)
+    # Import Models
     # =========================
-    from models.models import User
+    from models.models import User, Contract, Clause, RiskFlag
 
     # =========================
     # Create Tables
@@ -59,10 +48,14 @@ def create_app():
     # =========================
     @app.route("/")
     def health():
-        return jsonify({"status": "Backend Running Successfully"})
+        return jsonify({"status": "Backend Running (SQLite Mode)"})
 
     return app
 
 
-# Gunicorn entry point
+# Gunicorn entry
 app = create_app()
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
