@@ -1114,47 +1114,26 @@ document.addEventListener('DOMContentLoaded', () => {
         // -----------------------------------------------------------------------------
         // REAL API IMPLEMENTATION
         // -----------------------------------------------------------------------------
-        async function authFetch(url, options = {}) {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'auth.html';
-                return null;
-            }
+      async function authFetch(endpoint, options = {}) {
+    const token = localStorage.getItem("token");
 
-            const defaultHeaders = {
-                'Authorization': `Bearer ${token}`
-            };
+    const headers = {
+        "Authorization": `Bearer ${token}`
+    };
 
-            // If body is not FormData, set Content-Type to JSON
-            if (options.body && !(options.body instanceof FormData)) {
-                defaultHeaders['Content-Type'] = 'application/json';
-            }
+    if (options.body && !(options.body instanceof FormData)) {
+        headers["Content-Type"] = "application/json";
+    }
 
-            const fetchOptions = {
-                ...options,
-                headers: {
-                    ...defaultHeaders,
-                    ...(options.headers || {})
-                }
-            };
+    const response = await fetch(`${API_BASE}${endpoint}`, {
+        method: options.method || "GET",
+        headers,
+        body: options.body || null,
+        mode: "cors"
+    });
 
-            try {
-                const response = await fetch(url, fetchOptions);
-                
-                // Handle unauthorized or invalid tokens (expired or malformed)
-                if (response.status === 401 || response.status === 422) {
-                    localStorage.removeItem('token');
-                    window.location.href = 'auth.html';
-                    return null;
-                }
-
-                return response;
-            } catch (error) {
-                console.error('Fetch error:', error);
-                showToast('Network error. Please check if backend is running.', 'error');
-                throw error;
-            }
-        }
+    return response;
+}
         // -----------------------------------------------------------------------------
 
         // Navigation
@@ -1635,5 +1614,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 </html>
+
 
 
