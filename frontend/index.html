@@ -1037,7 +1037,6 @@
 
 // Backend API URL
 const API_BASE = "https://my-logic-production.up.railway.app/api";
-
         // State
         let currentContractId = null;
         let charts = {};
@@ -1051,19 +1050,21 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
 
         // Event Listeners
         document.addEventListener('DOMContentLoaded', () => {
-            // Check authentication
             const token = localStorage.getItem('token');
+
             if (!token) {
-                window.location.href = 'auth.html';
-                return;
+                // MODIFIED: Prevent hard redirect so the UI can be previewed in the Canvas.
+                // window.location.href = 'auth.html';
+                // return;
+                showToast('Running in Demo Preview. Authentication bypass activated.', 'error');
             }
 
             initNavigation();
             initTheme();
             initDragAndDrop();
             initLogout();
+            initUserProfile();
 
-            // Load history initially
             loadHistory();
         });
 
@@ -1073,21 +1074,14 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
                 logoutBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     localStorage.removeItem('token');
-                    window.location.href = 'auth.html';
+                    localStorage.removeItem('userEmail');
+                    
+                    // MODIFIED: Prevent hard redirect
+                    // window.location.href = 'auth.html';
+                    showToast('Logged out. (Redirect prevented in preview)', 'success');
                 });
             }
         }
-   
-
-            if (email) {
-                document.getElementById('user-email-display').innerText = email;
-                document.getElementById('user-avatar').innerText = email.charAt(0).toUpperCase();
-            } else {
-                document.getElementById('user-email-display').innerText = 'User Account';
-                document.getElementById('user-avatar').innerText = 'U';
-            }
-        }
-
         // -----------------------------------------------------------------------------
         // REAL API IMPLEMENTATION
         // -----------------------------------------------------------------------------
@@ -1591,6 +1585,7 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
 
 
 </html>
+
 
 
 
