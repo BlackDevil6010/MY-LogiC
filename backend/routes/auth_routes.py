@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
 from models import db
 from models.models import User
@@ -30,7 +30,17 @@ def register():
     # Generate token automatically so the user is logged in
     access_token = create_access_token(identity=str(new_user.id), expires_delta=datetime.timedelta(days=1))
     
-    return jsonify({"message": "User registered successfully", "token": access_token}), 201
+    return jsonify({"message": "User registered successfully", "token": access_token, "email": email}), 201
+
+@bp.route('/current-user', methods=['GET'])
+@jwt_required()
+def get_current_user():
+    user_id = get_jwt_identity()
+    user = User.query.get(int(user_id))
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    return jsonify({"email": user.email}), 200
 
 @bp.route('/login', methods=['POST'])
 def login():
@@ -45,4 +55,4 @@ def login():
 
     access_token = create_access_token(identity=str(user.id), expires_delta=datetime.timedelta(days=1))
     
-    return jsonify({"message": "Login successful", "token": access_token}), 200
+    return jsonify({"message": "Login successful", "token": access_token, "email": email}), 200
