@@ -1053,10 +1053,8 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
             const token = localStorage.getItem('token');
 
             if (!token) {
-                // MODIFIED: Prevent hard redirect so the UI can be previewed in the Canvas.
-                // window.location.href = 'auth.html';
-                // return;
-                showToast('Running in Demo Preview. Authentication bypass activated.', 'error');
+                window.location.href = 'auth.html';
+                return;
             }
 
             initNavigation();
@@ -1075,36 +1073,79 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
                     e.preventDefault();
                     localStorage.removeItem('token');
                     localStorage.removeItem('userEmail');
-                    
-                    // MODIFIED: Prevent hard redirect
-                    // window.location.href = 'auth.html';
+                    window.location.href = 'auth.html';
                     showToast('Logged out. (Redirect prevented in preview)', 'success');
                 });
             }
         }
+          async function initUserProfile() {
+            let email = localStorage.getItem('userEmail');
+            
+            if (!email) {
+                try {
+                    const res = await authFetch(`${API_BASE}/auth/current-user`);
+                    if (res && res.email) {
+                        email = res.email;
+                        localStorage.setItem('userEmail', email);
+                    }
+                } catch (err) {
+                    console.error('Failed to fetch user profile:', err);
+                }
+            }
+
+            if (email) {
+                document.getElementById('user-email-display').innerText = email;
+                document.getElementById('user-avatar').innerText = email.charAt(0).toUpperCase();
+            } else {
+                document.getElementById('user-email-display').innerText = 'User Account';
+       2         document.getElementById('user-avatar').innerText = 'U';
+            }
+        }
+
         // -----------------------------------------------------------------------------
         // REAL API IMPLEMENTATION
         // -----------------------------------------------------------------------------
-      async function authFetch(endpoint, options = {}) {
-    const token = localStorage.getItem("token");
+   async function authFetch(url, options = {}) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'auth.html';
+                return null;
+            }
 
-    const headers = {
-        "Authorization": `Bearer ${token}`
-    };
+            const defaultHeaders = {
+                'Authorization': `Bearer ${token}`
+            };
 
-    if (options.body && !(options.body instanceof FormData)) {
-        headers["Content-Type"] = "application/json";
-    }
+            // If body is not FormData, set Content-Type to JSON
+            if (options.body && !(options.body instanceof FormData)) {
+                defaultHeaders['Content-Type'] = 'application/json';
+            }
 
-    const response = await fetch(`${API_BASE}${endpoint}`, {
-        method: options.method || "GET",
-        headers,
-        body: options.body || null,
-        mode: "cors"
-    });
+            const fetchOptions = {
+                ...options,
+                headers: {
+                    ...defaultHeaders,
+                    ...(options.headers || {})
+                }
+            };
 
-    return response;
-}
+            try {
+                const response = await fetch(url, fetchOptions);
+                
+                // Handle unauthorized or invalid tokens (expired or malformed)
+                if (response.status === 401 || response.status === 422) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'auth.html';
+                    return null;
+                }
+
+                return response;
+            } catch (error) {
+                console.error('Fetch error:', error);
+                showToast('Network error. Please check if backend is running.', 'error');
+                throw error;
+            }
+        }
         // -----------------------------------------------------------------------------
 
         // Navigation
@@ -1585,6 +1626,7 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
 
 
 </html>
+
 
 
 
