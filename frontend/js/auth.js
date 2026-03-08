@@ -72,6 +72,7 @@ async function handleAuth(url, credentials, successMessage) {
 
         // Save token
         localStorage.setItem('token', data.token);
+        localStorage.setItem('userEmail', credentials.email);
         showToast(successMessage, 'success');
 
         setTimeout(() => {
@@ -102,4 +103,5 @@ function showToast(message, type = 'success') {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
+
 
