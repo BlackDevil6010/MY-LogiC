@@ -1,47 +1,39 @@
-from datetime import datetime
-from . import db
+import os
+from flask import Flask, jsonify
+from flask_cors import CORS
+from config import Config
+from extensions import db, bcrypt, jwt
 
-class User(db.Model):
-    __tablename__ = 'users'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Relationships
-    contracts = db.relationship('Contract', backref='user', cascade='all, delete-orphan')
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
 
-class Contract(db.Model):
-    __tablename__ = 'contracts'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(255), nullable=False)
-    upload_date = db.Column(db.DateTime, default=datetime.utcnow)
-    status = db.Column(db.String(50), default='pending') # pending, analyzing, completed, failed
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    
-    # Relationships
-    clauses = db.relationship('Clause', backref='contract', cascade='all, delete-orphan')
+    # Initialize extensions
+    db.init_app(app)
+    bcrypt.init_app(app)
+    jwt.init_app(app)
 
-class Clause(db.Model):
-    __tablename__ = 'clauses'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    contract_id = db.Column(db.Integer, db.ForeignKey('contracts.id', ondelete='CASCADE'), nullable=False)
-    text = db.Column(db.Text, nullable=False)
-    clause_type = db.Column(db.String(100), nullable=True)
-    segment_index = db.Column(db.Integer, nullable=False)
-    
-    # Relationships
-    risk_flags = db.relationship('RiskFlag', backref='clause', cascade='all, delete-orphan')
+    CORS(app)
 
-class RiskFlag(db.Model):
-    __tablename__ = 'risk_flags'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    clause_id = db.Column(db.Integer, db.ForeignKey('clauses.id', ondelete='CASCADE'), nullable=False)
-    category = db.Column(db.String(100), nullable=False)
-    severity = db.Column(db.String(20), nullable=False) # low, medium, high, critical
-    confidence = db.Column(db.Float, nullable=False)
-    description = db.Column(db.Text, nullable=False)
+    # Ensure upload folder exists
+    os.makedirs(app.config.get("UPLOAD_FOLDER", "uploads"), exist_ok=True)
+
+    with app.app_context():
+        from models import User, Contract, Clause, RiskFlag
+        db.create_all()
+        print("✅ Tables created successfully")
+
+    from routes.contract_routes import bp as contract_bp
+    from routes.auth_routes import bp as auth_bp
+
+    app.register_blueprint(contract_bp, url_prefix="/api")
+    app.register_blueprint(auth_bp, url_prefix="/api/auth")
+
+    @app.route("/")
+    def index():
+        return jsonify({"status": "Backend API running successfully"})
+
+    return app
+
+
+app = create_app()
