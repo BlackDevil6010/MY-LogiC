@@ -39,17 +39,23 @@ async function handleAuth(url, credentials, successMessage) {
             body: JSON.stringify(credentials)
         });
 
-        const data = await res.json();
+        const text = await res.text();  // 👈 get raw response first
+
+        let data;
+        try {
+            data = JSON.parse(text);   // try parsing JSON
+        } catch (e) {
+            console.error("Server returned non-JSON:", text);
+            throw new Error("Server error. Check backend logs.");
+        }
 
         if (!res.ok) {
             throw new Error(data.error || 'Authentication failed');
         }
 
-        // Save token
         localStorage.setItem('token', data.token);
         showToast(successMessage, 'success');
 
-        // Redirect to main dashboard
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 1000);
@@ -74,3 +80,4 @@ function showToast(message, type = 'success') {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
+
