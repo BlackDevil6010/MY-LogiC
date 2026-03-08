@@ -2,7 +2,7 @@ import os
 from flask import Flask, jsonify
 from flask_cors import CORS
 from config import Config
-from extensions import db, bcrypt, jwt   # IMPORTANT
+from extensions import db, bcrypt, jwt
 
 
 def create_app():
@@ -16,12 +16,16 @@ def create_app():
 
     CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
-    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+    # Ensure upload folder exists
+    os.makedirs(app.config.get("UPLOAD_FOLDER", "uploads"), exist_ok=True)
 
+    # 🔥 IMPORTANT: Import models directly before create_all()
     with app.app_context():
-        from models import models
+        from models.models import User, Contract, Clause, RiskFlag
         db.create_all()
+        print("✅ Tables created successfully")
 
+    # Register blueprints
     from routes.contract_routes import bp as contract_bp
     from routes.auth_routes import bp as auth_bp
 
