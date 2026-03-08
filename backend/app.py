@@ -34,7 +34,7 @@ def create_app():
         # supports_credentials=True is safe here because origin is specific.
         CORS(
             app, 
-            resources={r"/api/*": {"origins": frontend_url}}, 
+            resources={r"/api/": {"origins": ""}},
             supports_credentials=True
         )
     else:
@@ -98,3 +98,4 @@ app = create_app()
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
+
