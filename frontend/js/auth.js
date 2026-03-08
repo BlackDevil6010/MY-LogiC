@@ -1,5 +1,5 @@
 // 🔥 Production Backend URL
-const API_BASE = "https://my-logic-production.up.railway.app/api";
+const API_BASE = "https://my-logic-production.up.railway.app/api/auth/register";
 
 document.addEventListener('DOMContentLoaded', () => {
     // Redirect if already logged in
@@ -108,3 +108,4 @@ function showToast(message, type = 'success') {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
+
