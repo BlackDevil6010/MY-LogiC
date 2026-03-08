@@ -11,41 +11,56 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Logging
+    # -------------------------
+    # Logging Configuration
+    # -------------------------
     logging.basicConfig(level=logging.INFO)
     app.logger.setLevel(logging.INFO)
 
-    # Initialize extensions
+    # -------------------------
+    # Initialize Extensions
+    # -------------------------
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
 
     # -------------------------
-    # CORS: read allowed origin from env and normalise
+    # CORS Configuration
     # -------------------------
     frontend_url_raw = os.environ.get("FRONTEND_URL", "").strip()
-    # normalize by removing trailing slash (so both forms match)
+    # Normalize by removing trailing slash
     frontend_url = frontend_url_raw.rstrip("/") if frontend_url_raw else ""
 
     if frontend_url:
         app.logger.info(f"Using FRONTEND_URL for CORS: {frontend_url!r}")
-        # allow only the specific origin (flask-cors will handle preflight)
-        CORS(app, resources={r"/api/*": {"origins": frontend_url}}, supports_credentials=True)
+        # Production: Allow specific origin with credentials (for cookies/session if needed)
+        CORS(
+            app, 
+            resources={r"/api/*": {"origins": frontend_url}}, 
+            supports_credentials=True
+        )
     else:
         app.logger.warning(
             "FRONTEND_URL not set — allowing all origins for /api/* (development only)."
         )
-        # Development fallback (not recommended for production)
-        CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+        # Development Fallback:
+        # We remove 'supports_credentials=True' here.
+        # Browsers block wildcard "*" origins if credentials are allowed.
+        # Since your frontend uses localStorage (Bearer tokens), this is the correct setup.
+        CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-    # Ensure upload folder exists
+    # -------------------------
+    # Ensure Upload Folder Exists
+    # -------------------------
     upload_folder = app.config.get("UPLOAD_FOLDER", "uploads")
     os.makedirs(upload_folder, exist_ok=True)
 
-    # Import models and create tables (inside app_context)
+    # -------------------------
+    # Database Initialization
+    # -------------------------
     with app.app_context():
         try:
-            # IMPORTANT: models.models must NOT call create_app() (avoid circular import)
+            # Ensure models are imported
             import models.models  # noqa
             app.logger.info("Creating DB tables (if they don't exist)")
             db.create_all()
@@ -53,53 +68,29 @@ def create_app():
         except Exception as e:
             app.logger.exception("Failed to initialize database or create tables: %s", e)
 
-    # Register blueprints
+    # -------------------------
+    # Register Blueprints
+    # -------------------------
     try:
         from routes.auth_routes import bp as auth_bp
         from routes.contract_routes import bp as contract_bp
 
         app.register_blueprint(auth_bp, url_prefix="/api/auth")
         app.register_blueprint(contract_bp, url_prefix="/api")
+        app.logger.info("Blueprints registered successfully.")
     except Exception as e:
         app.logger.exception("Failed to register blueprints: %s", e)
 
-    # Root
+    # -------------------------
+    # Routes
+    # -------------------------
     @app.route("/")
     def index():
         return jsonify({"status": "Backend API running successfully"})
 
-    # Defensive after_request to ensure Access-Control headers are exactly what frontend expects.
-    @app.after_request
-    def add_cors_headers(response):
-        """
-        Only set Access-Control-Allow-Origin to the exact request Origin if it matches
-        FRONTEND_URL (normalized). This prevents the mismatch that caused the preflight to fail.
-        """
-        origin = request.headers.get("Origin")
-        configured = frontend_url  # normalized (no trailing slash) or empty string
-
-        if configured == "*":
-            # wildcard allowed (development)
-            response.headers["Access-Control-Allow-Origin"] = "*"
-        elif configured:
-            # only allow if the incoming origin matches the configured origin (compare normalized)
-            if origin and origin.rstrip("/") == configured:
-                # set to the incoming origin exactly (preserve scheme+host+port)
-                response.headers["Access-Control-Allow-Origin"] = origin
-        else:
-            # no FRONTEND_URL configured: allow everything (dev only)
-            response.headers["Access-Control-Allow-Origin"] = "*"
-
-        response.headers["Access-Control-Allow-Credentials"] = "true"
-        response.headers[
-            "Access-Control-Allow-Headers"
-        ] = "Content-Type, Authorization, X-Requested-With"
-        response.headers[
-            "Access-Control-Allow-Methods"
-        ] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-        return response
-
-    # Return JSON for API 404/500 instead of HTML (helps frontend)
+    # -------------------------
+    # Error Handlers
+    # -------------------------
     @app.errorhandler(404)
     def handle_404(err):
         if request.path.startswith("/api/"):
@@ -114,7 +105,9 @@ def create_app():
     return app
 
 
-# Gunicorn entrypoint
+# -------------------------
+# Entrypoint
+# -------------------------
 app = create_app()
 
 if __name__ == "__main__":
