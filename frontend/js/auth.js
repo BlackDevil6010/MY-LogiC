@@ -47,7 +47,6 @@ async function handleAuth(url, credentials, successMessage) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include', // ✅ ADDED: Required for CORS with credentials
             body: JSON.stringify(credentials)
         });
 
@@ -103,3 +102,4 @@ function showToast(message, type = 'success') {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
+
