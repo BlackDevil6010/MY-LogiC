@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import db
+from extensions import db
 from models.models import Contract, Clause, RiskFlag
 from utils.file_parser import FileParser
 from services.clause_extractor import ClauseExtractor
@@ -197,3 +197,4 @@ def get_analysis_summary(contract_id):
         response['clauses'].append(clause_data)
         
     return jsonify(response), 200
+
