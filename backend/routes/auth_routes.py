@@ -40,25 +40,32 @@ def register():
 
 @bp.route("/login", methods=["POST"])
 def login():
-    data = request.get_json()
+    try:
+        data = request.get_json()
+        print("Incoming data:", data)
 
-    email = data.get("email")
-    password = data.get("password")
+        email = data.get("email")
+        password = data.get("password")
 
-    if not email or not password:
-        return jsonify({"error": "Missing email or password"}), 400
+        if not email or not password:
+            return jsonify({"error": "Missing email or password"}), 400
 
-    user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
+        print("User found:", user)
 
-    if not user or not bcrypt.check_password_hash(user.password_hash, password):
-        return jsonify({"error": "Invalid email or password"}), 401
+        if not user:
+            return jsonify({"error": "User not found"}), 401
 
-    access_token = create_access_token(
-        identity=str(user.id),
-        expires_delta=datetime.timedelta(days=1)
-    )
+        if not bcrypt.check_password_hash(user.password_hash, password):
+            return jsonify({"error": "Invalid password"}), 401
 
-    return jsonify({
-        "message": "Login successful",
-        "token": access_token
-    }), 200
+        access_token = create_access_token(identity=str(user.id))
+
+        return jsonify({
+            "message": "Login successful",
+            "token": access_token
+        }), 200
+
+    except Exception as e:
+        print("LOGIN ERROR:", str(e))
+        return jsonify({"error": str(e)}), 500
