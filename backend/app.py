@@ -4,6 +4,7 @@ from flask_cors import CORS
 from config import Config
 from extensions import db, bcrypt, jwt
 
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -18,16 +19,23 @@ def create_app():
     # Ensure upload folder exists
     os.makedirs(app.config.get("UPLOAD_FOLDER", "uploads"), exist_ok=True)
 
+    # 🔥 FORCE TABLE CREATION
     with app.app_context():
-        from models import User, Contract, Clause, RiskFlag
+        from models.models import User, Contract, Clause, RiskFlag
+        
+        print("📌 DATABASE URL:", app.config["SQLALCHEMY_DATABASE_URI"])
+        print("📌 Creating tables now...")
+
         db.create_all()
-        print("✅ Tables created successfully")
 
-    from routes.contract_routes import bp as contract_bp
+        print("✅ Tables created successfully!")
+
+    # Register blueprints
     from routes.auth_routes import bp as auth_bp
+    from routes.contract_routes import bp as contract_bp
 
-    app.register_blueprint(contract_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
+    app.register_blueprint(contract_bp, url_prefix="/api")
 
     @app.route("/")
     def index():
@@ -37,3 +45,7 @@ def create_app():
 
 
 app = create_app()
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
