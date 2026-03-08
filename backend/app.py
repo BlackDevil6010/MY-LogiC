@@ -14,23 +14,28 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
 
-    CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+    CORS(app)
 
     # Ensure upload folder exists
     os.makedirs(app.config.get("UPLOAD_FOLDER", "uploads"), exist_ok=True)
 
-    # 🔥 IMPORTANT: Import models directly before create_all()
+    # 🔥 FORCE TABLE CREATION
     with app.app_context():
         from models.models import User, Contract, Clause, RiskFlag
+        
+        print("📌 DATABASE URL:", app.config["SQLALCHEMY_DATABASE_URI"])
+        print("📌 Creating tables now...")
+
         db.create_all()
-        print("✅ Tables created successfully")
+
+        print("✅ Tables created successfully!")
 
     # Register blueprints
-    from routes.contract_routes import bp as contract_bp
     from routes.auth_routes import bp as auth_bp
+    from routes.contract_routes import bp as contract_bp
 
-    app.register_blueprint(contract_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
+    app.register_blueprint(contract_bp, url_prefix="/api")
 
     @app.route("/")
     def index():
