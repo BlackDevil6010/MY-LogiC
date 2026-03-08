@@ -11,15 +11,11 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # -------------------------
-    # Logging Configuration
-    # -------------------------
+    # Logging
     logging.basicConfig(level=logging.INFO)
     app.logger.setLevel(logging.INFO)
 
-    # -------------------------
-    # Initialize Extensions
-    # -------------------------
+    # Initialize extensions
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
@@ -32,58 +28,49 @@ def create_app():
     frontend_url = frontend_url_raw.rstrip("/") if frontend_url_raw else ""
 
     if frontend_url:
-        app.logger.info(f"Using FRONTEND_URL for CORS: {frontend_url!r}")
-        # Production: Allow specific origin with credentials (for cookies/session if needed)
+        app.logger.info(f"CORS: Configuring for origin -> {frontend_url}")
+        # Production Mode:
+        # Allow the specific Vercel frontend.
+        # supports_credentials=True is safe here because origin is specific.
         CORS(
             app, 
             resources={r"/api/*": {"origins": frontend_url}}, 
             supports_credentials=True
         )
     else:
-        app.logger.warning(
-            "FRONTEND_URL not set — allowing all origins for /api/* (development only)."
-        )
-        # Development Fallback:
-        # We remove 'supports_credentials=True' here.
-        # Browsers block wildcard "*" origins if credentials are allowed.
-        # Since your frontend uses localStorage (Bearer tokens), this is the correct setup.
+        app.logger.warning("CORS: FRONTEND_URL not set. Allowing all origins (Development Mode).")
+        # Development Mode:
+        # Allow all origins (*).
+        # NOTE: We remove supports_credentials=True here. 
+        # Browsers reject wildcard (*) combined with credentials.
+        # Your frontend uses localStorage, so this is the correct setup.
         CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-    # -------------------------
-    # Ensure Upload Folder Exists
-    # -------------------------
+    # Ensure upload folder exists
     upload_folder = app.config.get("UPLOAD_FOLDER", "uploads")
     os.makedirs(upload_folder, exist_ok=True)
 
-    # -------------------------
-    # Database Initialization
-    # -------------------------
+    # Import models and create tables
     with app.app_context():
         try:
-            # Ensure models are imported
             import models.models  # noqa
             app.logger.info("Creating DB tables (if they don't exist)")
             db.create_all()
             app.logger.info("Database tables ready")
         except Exception as e:
-            app.logger.exception("Failed to initialize database or create tables: %s", e)
+            app.logger.exception("Failed to initialize database: %s", e)
 
-    # -------------------------
-    # Register Blueprints
-    # -------------------------
+    # Register blueprints
     try:
         from routes.auth_routes import bp as auth_bp
         from routes.contract_routes import bp as contract_bp
 
         app.register_blueprint(auth_bp, url_prefix="/api/auth")
         app.register_blueprint(contract_bp, url_prefix="/api")
-        app.logger.info("Blueprints registered successfully.")
     except Exception as e:
         app.logger.exception("Failed to register blueprints: %s", e)
 
-    # -------------------------
-    # Routes
-    # -------------------------
+    # Root Route
     @app.route("/")
     def index():
         return jsonify({"status": "Backend API running successfully"})
@@ -105,9 +92,7 @@ def create_app():
     return app
 
 
-# -------------------------
-# Entrypoint
-# -------------------------
+# Gunicorn entrypoint
 app = create_app()
 
 if __name__ == "__main__":
