@@ -1094,7 +1094,7 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
 
             if (email) {
                 document.getElementById('user-email-display').innerText = email;
-                document.getElementById('user-avatar').innerText = email;
+                document.getElementById('user-avatar').innerText = email.charAt(0).toUpperCase();
             } else {
                 document.getElementById('user-email-display').innerText = 'User Account';
                 document.getElementById('user-avatar').innerText = 'U';
@@ -1625,6 +1625,7 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
 
 
 </html>
+
 
 
 
