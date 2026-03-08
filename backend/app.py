@@ -1,4 +1,3 @@
-# app.py
 import os
 import logging
 from flask import Flask, jsonify, request
@@ -8,14 +7,18 @@ from extensions import db, bcrypt, jwt
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(_name_)
     app.config.from_object(Config)
 
+    # -------------------------
     # Logging
+    # -------------------------
     logging.basicConfig(level=logging.INFO)
     app.logger.setLevel(logging.INFO)
 
+    # -------------------------
     # Initialize extensions
+    # -------------------------
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
@@ -24,33 +27,66 @@ def create_app():
     # CORS Configuration
     # -------------------------
     frontend_url_raw = os.environ.get("FRONTEND_URL", "").strip()
-    # Normalize by removing trailing slash
     frontend_url = frontend_url_raw.rstrip("/") if frontend_url_raw else ""
 
     if frontend_url:
         app.logger.info(f"CORS: Configuring for origin -> {frontend_url}")
-        # Production Mode:
-        # Allow the specific Vercel frontend.
-        # supports_credentials=True is safe here because origin is specific.
+
         CORS(
-            app, 
-            resources={r"/api/*": {"origins": frontend_url}}, 
-            supports_credentials=True
+            app,
+            resources={r"/api/*": {"origins": [frontend_url]}},
+            supports_credentials=True,
+            allow_headers=["Content-Type", "Authorization"],
+            methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
         )
+
     else:
         app.logger.warning("CORS: FRONTEND_URL not set. Allowing all origins (Development Mode).")
-        # Development Mode:
-        # Allow all origins (*).
-        # NOTE: We remove supports_credentials=True here. 
-        # Browsers reject wildcard (*) combined with credentials.
-        # Your frontend uses localStorage, so this is the correct setup.
-        CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+        CORS(
+            app,
+            resources={r"/api/": {"origins": ""}},
+            allow_headers=["Content-Type", "Authorization"],
+            methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        )
+
+    # -------------------------
+    # Handle Preflight Requests
+    # -------------------------
+    @app.before_request
+    def handle_preflight():
+        if request.method == "OPTIONS":
+            response = app.make_default_options_response()
+            headers = response.headers
+
+            headers["Access-Control-Allow-Origin"] = os.environ.get("FRONTEND_URL", "*")
+            headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+            headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+
+            return response
+
+    # -------------------------
+    # Force CORS headers
+    # -------------------------
+    @app.after_request
+    def add_cors_headers(response):
+        origin = os.environ.get("FRONTEND_URL", "*")
+
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+
+        return response
+
+    # -------------------------
     # Ensure upload folder exists
+    # -------------------------
     upload_folder = app.config.get("UPLOAD_FOLDER", "uploads")
     os.makedirs(upload_folder, exist_ok=True)
 
+    # -------------------------
     # Import models and create tables
+    # -------------------------
     with app.app_context():
         try:
             import models.models  # noqa
@@ -60,17 +96,22 @@ def create_app():
         except Exception as e:
             app.logger.exception("Failed to initialize database: %s", e)
 
+    # -------------------------
     # Register blueprints
+    # -------------------------
     try:
         from routes.auth_routes import bp as auth_bp
         from routes.contract_routes import bp as contract_bp
 
         app.register_blueprint(auth_bp, url_prefix="/api/auth")
         app.register_blueprint(contract_bp, url_prefix="/api")
+
     except Exception as e:
         app.logger.exception("Failed to register blueprints: %s", e)
 
+    # -------------------------
     # Root Route
+    # -------------------------
     @app.route("/")
     def index():
         return jsonify({"status": "Backend API running successfully"})
@@ -92,9 +133,11 @@ def create_app():
     return app
 
 
-# Gunicorn entrypoint
+# -------------------------
+# Gunicorn Entrypoint
+# -------------------------
 app = create_app()
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
