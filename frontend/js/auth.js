@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value.trim();
 
@@ -29,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const email = document.getElementById('reg-email').value.trim();
             const password = document.getElementById('reg-password').value.trim();
 
@@ -49,6 +47,7 @@ async function handleAuth(url, credentials, successMessage) {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include', // ✅ ADDED: Required for CORS with credentials
             body: JSON.stringify(credentials)
         });
 
@@ -57,7 +56,6 @@ async function handleAuth(url, credentials, successMessage) {
         console.log("Server Raw Response:", rawText);
 
         let data;
-
         try {
             data = JSON.parse(rawText);
         } catch (parseError) {
@@ -75,7 +73,6 @@ async function handleAuth(url, credentials, successMessage) {
 
         // Save token
         localStorage.setItem('token', data.token);
-
         showToast(successMessage, 'success');
 
         setTimeout(() => {
@@ -90,12 +87,10 @@ async function handleAuth(url, credentials, successMessage) {
 
 function showToast(message, type = 'success') {
     const container = document.getElementById('toast-container');
-
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-
     const icon = type === 'success' ? '✅' : '❌';
-
+    
     toast.innerHTML = `
         <span>${icon}</span>
         <span>${message}</span>
@@ -108,7 +103,3 @@ function showToast(message, type = 'success') {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
-
-
-
-
