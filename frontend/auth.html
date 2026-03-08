@@ -328,165 +328,102 @@
     <!-- Toast Notifications -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script>
-        // Form toggle logic
-        function toggleForm(type) {
-            const login = document.getElementById('login-form');
-            const register = document.getElementById('register-form');
+  <script>
+const API_BASE = "https://my-logic-production.up.railway.app/api";
 
-            if (type === 'register') {
-                login.style.display = 'none';
-                login.classList.remove('fade-in');
-                register.style.display = 'block';
-                register.classList.add('fade-in');
-                document.title = 'Register - Contract AI';
-            } else {
-                register.style.display = 'none';
-                register.classList.remove('fade-in');
-                login.style.display = 'block';
-                login.classList.add('fade-in');
-                document.title = 'Login - Contract AI';
-            }
-        }
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("form-login");
+    const registerForm = document.getElementById("form-register");
 
-        // Authentication logic
-        const API_BASE = "https://my-logic-production.up.railway.app/api";
+    if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Redirect if already logged in
-            if (localStorage.getItem('token')) {
-                // Commented out to prevent infinite looping in the preview environment, uncomment for production.
-                // window.location.href = 'index.html'; 
-            }
+            const email = document.getElementById("login-email").value.trim();
+            const password = document.getElementById("login-password").value.trim();
 
-            const loginForm = document.getElementById('form-login');
-            const registerForm = document.getElementById('form-register');
+            await handleAuth(`${API_BASE}/auth/login`, { email, password }, "Login successful!");
+        });
+    }
 
-            if (loginForm) {
-                loginForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
+    if (registerForm) {
+        registerForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-                    const email = document.getElementById('login-email').value.trim();
-                    const password = document.getElementById('login-password').value.trim();
-                    const submitBtn = loginForm.querySelector('button[type="submit"]');
+            const email = document.getElementById("reg-email").value.trim();
+            const password = document.getElementById("reg-password").value.trim();
 
-                    submitBtn.innerText = 'Signing In...';
-                    submitBtn.disabled = true;
+            await handleAuth(`${API_BASE}/auth/register`, { email, password }, "Registration successful!");
+        });
+    }
+});
 
-                    await handleAuth(
-                        `${API_BASE}/auth/login`,
-                        { email, password },
-                        'Login successful!'
-                    );
-
-                    submitBtn.innerText = 'Sign In';
-                    submitBtn.disabled = false;
-                });
-            }
-
-            if (registerForm) {
-                registerForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-
-                    const email = document.getElementById('reg-email').value.trim();
-                    const password = document.getElementById('reg-password').value.trim();
-                    const submitBtn = registerForm.querySelector('button[type="submit"]');
-                    
-                    submitBtn.innerText = 'Signing Up...';
-                    submitBtn.disabled = true;
-
-                    await handleAuth(
-                        `${API_BASE}/auth/register`,
-                        { email, password },
-                        'Registration successful! Logging in...'
-                    );
-
-                    submitBtn.innerText = 'Sign Up';
-                    submitBtn.disabled = false;
-                });
-            }
+async function handleAuth(url, credentials, successMessage) {
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(credentials)
         });
 
-        async function handleAuth(url, credentials, successMessage) {
-            try {
-                let res;
-                try {
-                    res = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(credentials)
-                    });
-                } catch (networkError) {
-                    console.warn("Network error (CORS or server unreachable). Falling back to mock authentication for preview.", networkError);
-                    
-                    // Mock a brief network delay
-                    await new Promise(resolve => setTimeout(resolve, 600));
-                    
-                    // Mock success response
-                    localStorage.setItem('token', 'mock_token_' + Date.now());
-                    showToast(successMessage + ' (Mock Fallback)', 'success');
-                    return;
-                }
+        const text = await response.text();
 
-                // Always read raw text first
-                const rawText = await res.text();
-                console.log("Server Raw Response:", rawText);
-
-                let data;
-
-                try {
-                    data = JSON.parse(rawText);
-                } catch (parseError) {
-                    console.error("Response is NOT JSON:", rawText);
-                    throw new Error("Server returned an invalid response. Check backend logs.");
-                }
-
-                if (!res.ok) {
-                    throw new Error(data.error || "Authentication failed");
-                }
-
-                if (!data.token) {
-                    throw new Error("Token not received from server");
-                }
-
-                // Save token
-                localStorage.setItem('token', data.token);
-
-                showToast(successMessage, 'success');
-
-                setTimeout(() => {
-                    // window.location.href = 'index.html'; // Uncomment for real redirection
-                }, 1000);
-
-            } catch (error) {
-                console.error("Auth Error:", error);
-                showToast(error.message || "Something went wrong", 'error');
-            }
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            console.error("Invalid JSON:", text);
+            showToast("Server returned invalid response.", "error");
+            return;
         }
 
-        // Toast notification logic
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-
-            const icon = type === 'success' ? '✅' : '❌';
-
-            toast.innerHTML = `
-                <span>${icon}</span>
-                <span>${message}</span>
-            `;
-
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.style.animation = 'fadeOut 0.3s ease-in forwards';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+        if (!response.ok) {
+            showToast(data.error || "Authentication failed", "error");
+            return;
         }
-    </script>
+
+        if (!data.token) {
+            showToast("Token not received from server", "error");
+            return;
+        }
+
+        localStorage.setItem("token", data.token);
+        showToast(successMessage, "success");
+
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 1000);
+
+    } catch (error) {
+        console.error("Fetch failed:", error);
+        showToast("Backend unreachable. Check CORS or server.", "error");
+    }
+}
+
+function showToast(message, type = "success") {
+    const container = document.getElementById("toast-container");
+
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+
+    const icon = type === "success" ? "✅" : "❌";
+
+    toast.innerHTML = `
+        <span>${icon}</span>
+        <span>${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = "fadeOut 0.3s ease-in forwards";
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+</script>
 </body>
 
 </html>
+
