@@ -1,4 +1,6 @@
 import os
+import json
+import urllib.request
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -248,39 +250,64 @@ def email_analysis_summary(contract_id):
             html_content += "</div>"
             
     try:
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = f"Contract Analysis Report: {contract.filename}"
-        
         sender = current_app.config.get('MAIL_DEFAULT_SENDER')
         if not sender:
-            sender = "noreply@contractai.test"
+            sender = "onboarding@resend.dev" # Default testing domain for Resend
             
-        msg["From"] = sender
-        msg["To"] = recipient_email
-        
-        part = MIMEText(html_content, "html")
-        msg.attach(part)
-        
+        resend_api_key = os.getenv('RESEND_API_KEY')
         username = current_app.config.get('MAIL_USERNAME')
         password = current_app.config.get('MAIL_PASSWORD')
+        subject = f"Contract Analysis Report: {contract.filename}"
         
-        if username and password:
-            server = smtplib.SMTP(current_app.config.get('MAIL_SERVER'), current_app.config.get('MAIL_PORT'))
+        if resend_api_key:
+            # 1. Use Resend API (For Production/Railway)
+            payload = {
+                "from": sender,
+                "to": [recipient_email],
+                "subject": subject,
+                "html": html_content
+            }
+            req = urllib.request.Request(
+                "https://api.resend.com/emails",
+                data=json.dumps(payload).encode('utf-8'),
+                headers={
+                    "Authorization": f"Bearer {resend_api_key}",
+                    "Content-Type": "application/json"
+                },
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=10) as response:
+                if response.status >= 400:
+                    raise Exception(f"Resend API Error: {response.read()}")
+            return jsonify({'message': 'Email sent successfully via HTTP API'}), 200
+            
+        elif username and password:
+            # 2. Fallback: Use SMTP if credentials are provided (For Local Development)
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = subject
+            msg["From"] = sender
+            msg["To"] = recipient_email
+            
+            part = MIMEText(html_content, "html")
+            msg.attach(part)
+            
+            server = smtplib.SMTP(current_app.config.get('MAIL_SERVER'), current_app.config.get('MAIL_PORT'), timeout=10)
             if current_app.config.get('MAIL_USE_TLS'):
                 server.starttls()
             server.login(username, password)
             server.sendmail(sender, recipient_email, msg.as_string())
             server.quit()
+            return jsonify({'message': 'Email sent successfully'}), 200
+            
         else:
-            # If no credentials, mock the email
+            # 3. Last Resort: Mock the email (If no API key and no SMTP credentials)
             print("\n----- MOCK EMAIL SENT -----")
             print(f"To: {recipient_email}")
-            print(f"Subject: {msg['Subject']}")
+            print(f"Subject: {subject}")
             print(f"Body: (HTML Report with {len(clauses)} clauses)")
             print("---------------------------\n")
             return jsonify({'message': 'Email mock sent successfully (No SMTP configured in backend)'}), 200
             
-        return jsonify({'message': 'Email sent successfully'}), 200
     except Exception as e:
         print(f"Failed to send email: {str(e)}")
         return jsonify({'error': f"Failed to send email: {str(e)}"}), 500
