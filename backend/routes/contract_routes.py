@@ -254,7 +254,8 @@ def email_analysis_summary(contract_id):
         if not sender:
             sender = "onboarding@resend.dev" # Default testing domain for Resend
             
-        resend_api_key = os.getenv('RESEND_API_KEY')
+        resend_api_key_env = os.getenv('RESEND_API_KEY')
+        resend_api_key = resend_api_key_env.strip() if resend_api_key_env else None
         username = current_app.config.get('MAIL_USERNAME')
         password = current_app.config.get('MAIL_PASSWORD')
         subject = f"Contract Analysis Report: {contract.filename}"
