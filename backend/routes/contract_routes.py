@@ -1,4 +1,7 @@
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -197,4 +200,88 @@ def get_analysis_summary(contract_id):
         response['clauses'].append(clause_data)
         
     return jsonify(response), 200
+
+@bp.route('/analysis/<int:contract_id>/email', methods=['POST'])
+@jwt_required()
+def email_analysis_summary(contract_id):
+    data = request.json
+    recipient_email = data.get('email')
+    
+    if not recipient_email:
+        return jsonify({'error': 'recipient email is required'}), 400
+        
+    user_id = int(get_jwt_identity())
+    contract = db.session.get(Contract, contract_id)
+    if not contract or contract.user_id != user_id:
+        return jsonify({'error': 'Contract not found'}), 404
+        
+    clauses = Clause.query.filter_by(contract_id=contract.id).order_by(Clause.segment_index).all()
+    
+    # Generate HTML content for the email
+    html_content = f"<h2>Contract Risk Analysis: {contract.filename}</h2>"
+    html_content += f"<p>Status: {contract.status}</p>"
+    
+    high_risks = 0
+    med_risks = 0
+    for c in clauses:
+        for r in c.risk_flags:
+            if r.severity in ['high', 'critical']:
+                high_risks += 1
+            elif r.severity == 'medium':
+                med_risks += 1
+                
+    html_content += f"<h3>Summary</h3>"
+    html_content += f"<ul><li>Total Clauses: {len(clauses)}</li>"
+    html_content += f"<li>High/Critical Risks: {high_risks}</li>"
+    html_content += f"<li>Medium Risks: {med_risks}</li></ul>"
+    
+    html_content += "<h3>Risk Details</h3>"
+    for c in clauses:
+        if c.risk_flags:
+            html_content += f"<div style='margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 8px;'>"
+            html_content += f"<p><strong>Clause Text:</strong> {c.text}</p>"
+            html_content += "<ul style='padding-left: 20px;'>"
+            for r in c.risk_flags:
+                color = "red" if r.severity in ['high', 'critical'] else "orange"
+                html_content += f"<li style='margin-bottom: 10px;'><strong style='color: {color}'>{r.severity.upper()} ({r.category.replace('_', ' ').capitalize()})</strong>: {r.description}</li>"
+            html_content += "</ul>"
+            html_content += "</div>"
+            
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = f"Contract Analysis Report: {contract.filename}"
+        
+        sender = current_app.config.get('MAIL_DEFAULT_SENDER')
+        if not sender:
+            sender = "noreply@contractai.test"
+            
+        msg["From"] = sender
+        msg["To"] = recipient_email
+        
+        part = MIMEText(html_content, "html")
+        msg.attach(part)
+        
+        username = current_app.config.get('MAIL_USERNAME')
+        password = current_app.config.get('MAIL_PASSWORD')
+        
+        if username and password:
+            server = smtplib.SMTP(current_app.config.get('MAIL_SERVER'), current_app.config.get('MAIL_PORT'))
+            if current_app.config.get('MAIL_USE_TLS'):
+                server.starttls()
+            server.login(username, password)
+            server.sendmail(sender, recipient_email, msg.as_string())
+            server.quit()
+        else:
+            # If no credentials, mock the email
+            print("\n----- MOCK EMAIL SENT -----")
+            print(f"To: {recipient_email}")
+            print(f"Subject: {msg['Subject']}")
+            print(f"Body: (HTML Report with {len(clauses)} clauses)")
+            print("---------------------------\n")
+            return jsonify({'message': 'Email mock sent successfully (No SMTP configured in backend)'}), 200
+            
+        return jsonify({'message': 'Email sent successfully'}), 200
+    except Exception as e:
+        print(f"Failed to send email: {str(e)}")
+        return jsonify({'error': f"Failed to send email: {str(e)}"}), 500
 
