@@ -563,16 +563,6 @@
             overflow: hidden;
         }
 
-        .stats-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--accent-gradient);
-        }
-
         .stats-card.risk-high::before {
             background: var(--risk-high);
         }
@@ -1165,15 +1155,6 @@
                         <p id="analysis-status">Status: <span class="badge">Processing</span></p>
                     </div>
                     <div style="display: flex; gap: 1rem;">
-                        <button class="btn primary" id="btn-email-report" style="display: none;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
-                                </path>
-                                <polyline points="22,6 12,13 2,6"></polyline>
-                            </svg>
-                            Email Report
-                        </button>
                         <button class="btn secondary" id="btn-back">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1246,31 +1227,6 @@
                         <div class="full-text-container" id="modal-full-text"></div>
                         <h3 class="mt-4" style="margin-bottom: 1.5rem; font-size: 1.5rem;">Risk Flags Detected</h3>
                         <div id="modal-risks-container"></div>
-                    </div>
-                </div>
-
-                <!-- Email Modal -->
-                <div id="email-modal" class="modal">
-                    <div class="modal-content" style="max-width: 500px; padding: 2.5rem;">
-                        <span class="close-btn" id="close-email-modal">&times;</span>
-                        <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--text-main);">Share Report</h2>
-                        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 1rem;">Send the full risk
-                            analysis report to any email address.</p>
-                        <div style="margin-bottom: 1.5rem;">
-                            <label for="email-input"
-                                style="display: block; margin-bottom: 0.75rem; font-weight: 500; color: var(--text-main);">Email
-                                Address</label>
-                            <input type="email" id="email-input" placeholder="colleague@company.com"
-                                style="width: 100%; padding: 1rem 1.25rem; border-radius: 12px; border: 1px solid var(--border-glass); background: rgba(0,0,0,0.1); color: var(--text-main); font-family: inherit; font-size: 1rem; outline: none; transition: border-color 0.3s; margin-bottom: 1rem;">
-                        </div>
-                        <button class="btn primary" id="btn-send-email" style="width: 100%;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="22" y1="2" x2="11" y2="13"></line>
-                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                            </svg>
-                            Send Report
-                        </button>
                     </div>
                 </div>
             </section>
@@ -1349,9 +1305,6 @@
             }
         }
 
-        // -----------------------------------------------------------------------------
-        // REAL API IMPLEMENTATION
-        // -----------------------------------------------------------------------------
         async function authFetch(url, options = {}) {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -1393,14 +1346,12 @@
                 throw error;
             }
         }
-        // -----------------------------------------------------------------------------
 
         // Navigation
         function initNavigation() {
             navItems.forEach(item => {
                 const viewId = item.getAttribute('data-view');
 
-                // Only add navigation listener to items with a data-view attribute
                 if (viewId) {
                     item.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -1616,25 +1567,16 @@
         async function deleteContract(id) {
             if (!confirm('Are you sure you want to delete this contract?')) return;
             try {
-                console.log(`Attempting to delete contract ID: ${id}`);
                 const res = await authFetch(`${API_BASE}/contracts/${id}`, { method: 'DELETE' });
-
-                if (!res) {
-                    console.error('Delete request failed: Empty response (likely 401 Redirect)');
-                    return;
-                }
-
+                if (!res) return;
                 if (res.ok) {
-                    console.log(`Success: Contract ${id} deleted.`);
                     showToast('Contract deleted successfully', 'success');
                     loadHistory();
                 } else {
                     const data = await res.json();
-                    console.error('Delete request failed:', data.error);
                     showToast(data.error || 'Failed to delete contract', 'error');
                 }
             } catch (err) {
-                console.error('Delete function error:', err);
                 showToast('Network error while deleting', 'error');
             }
         }
@@ -1657,10 +1599,7 @@
                 statusEl.innerHTML = `Status: <span class="badge ${data.status}">${data.status}</span>`;
 
                 if (data.status === 'completed') {
-                    document.getElementById('btn-email-report').style.display = 'inline-flex';
                     renderDashboard(data.clauses);
-                } else {
-                    document.getElementById('btn-email-report').style.display = 'none';
                 }
             } catch (err) {
                 showToast(err.message, 'error');
@@ -1683,18 +1622,14 @@
             document.getElementById('stat-high').innerText = highRiskCount;
             document.getElementById('stat-med').innerText = medRiskCount;
 
-            // Container for grouped clauses
             const container = document.getElementById('clauses-grouped-container');
             container.innerHTML = '';
 
-            // For Charts & Stats grouping
             const riskData = { critical: 0, high: 0, medium: 0, low: 0 };
             const typeData = {};
             const groupedClauses = {};
 
-            // Group clauses and calculate chart data
             clauses.forEach((c) => {
-                // Tally risks
                 if (c.risks.length === 0) {
                     riskData.low += 1;
                 } else {
@@ -1702,24 +1637,17 @@
                         riskData[r.severity] = (riskData[r.severity] || 0) + 1;
                     });
                 }
-
-                // Tally types
                 typeData[c.clause_type] = (typeData[c.clause_type] || 0) + 1;
-
-                // Group by type for UI
                 if (!groupedClauses[c.clause_type]) {
                     groupedClauses[c.clause_type] = [];
                 }
                 groupedClauses[c.clause_type].push(c);
             });
 
-            // Render Grouped Sections
             for (const [type, typeClauses] of Object.entries(groupedClauses)) {
                 const formattedType = type.replace(/_/g, ' ');
-
                 const groupDiv = document.createElement('div');
                 groupDiv.className = 'clause-group';
-
                 groupDiv.innerHTML = `
                     <div class="clause-group-header">
                         ${formattedType} <span class="badge" style="border-radius: 6px;">${typeClauses.length} Clause${typeClauses.length > 1 ? 's' : ''}</span>
@@ -1737,13 +1665,10 @@
                         </table>
                     </div>
                 `;
-
                 const tbody = groupDiv.querySelector('tbody');
-
                 typeClauses.forEach((c, idx) => {
                     const tr = document.createElement('tr');
                     let riskHtml = '';
-
                     if (c.risks.length === 0) {
                         riskHtml = '<span class="risk-badge low">CLEAN</span>';
                     } else {
@@ -1751,53 +1676,38 @@
                             riskHtml += `<span class="risk-badge ${r.severity}">${r.severity}</span>`;
                         });
                     }
-
                     tr.innerHTML = `
                         <td>${idx + 1}</td>
                         <td><div class="text-snippet" style="max-width: 600px;">${c.text}</div></td>
                         <td>${riskHtml}</td>
                     `;
-
                     tr.onclick = () => showModal(c);
                     tbody.appendChild(tr);
                 });
-
                 container.appendChild(groupDiv);
             }
 
-            // Reconstruct Real Document
             const docViewer = document.getElementById('full-document-viewer');
             docViewer.innerHTML = '';
-
-            // Sort clauses by segment_index
             const sortedClauses = [...clauses].sort((a, b) => a.segment_index - b.segment_index);
-
             sortedClauses.forEach(c => {
                 let highestRisk = 'low';
                 let riskScore = 0;
-
                 c.risks.forEach(r => {
                     let score = 0;
                     if (r.severity === 'medium') score = 1;
                     if (r.severity === 'high') score = 2;
                     if (r.severity === 'critical') score = 3;
-
                     if (score > riskScore) {
                         riskScore = score;
                         highestRisk = r.severity;
                     }
                 });
-
                 const p = document.createElement('span');
                 p.className = 'doc-clause';
-                if (highestRisk !== 'low') {
-                    p.setAttribute('data-risk', highestRisk);
-                }
-
-                // Add a space after the text so it flows nicely as inline elements
+                if (highestRisk !== 'low') p.setAttribute('data-risk', highestRisk);
                 p.innerText = c.text + ' ';
                 p.onclick = () => showModal(c);
-
                 docViewer.appendChild(p);
             });
 
@@ -1834,8 +1744,6 @@
 
             const ctxType = document.getElementById('typeChart').getContext('2d');
             const typeLabels = Object.keys(typeData).map(t => t.replace(/_/g, ' ').toUpperCase());
-
-            // Color palette for the sectors
             const pieColors = ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4', '#f97316'];
 
             charts.type = new Chart(ctxType, {
@@ -1867,56 +1775,12 @@
             }
         }
 
-        // Modals
         const riskModal = document.getElementById('risk-modal');
-        const emailModal = document.getElementById('email-modal');
-
         document.querySelector('.close-btn').onclick = () => riskModal.style.display = 'none';
-        document.getElementById('close-email-modal').onclick = () => emailModal.style.display = 'none';
 
         window.onclick = (e) => {
             if (e.target == riskModal) riskModal.style.display = 'none';
-            if (e.target == emailModal) emailModal.style.display = 'none';
         }
-
-        // Email Feature
-        document.getElementById('btn-email-report').addEventListener('click', () => {
-            document.getElementById('email-input').value = '';
-            emailModal.style.display = 'block';
-        });
-
-        document.getElementById('btn-send-email').addEventListener('click', async () => {
-            const email = document.getElementById('email-input').value.trim();
-            if (!email || !email.includes('@')) {
-                showToast('Please enter a valid email address.', 'error');
-                return;
-            }
-
-            const btn = document.getElementById('btn-send-email');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = 'Sending...';
-            btn.disabled = true;
-
-            try {
-                const res = await authFetch(`${API_BASE}/analysis/${currentContractId}/email`, {
-                    method: 'POST',
-                    body: JSON.stringify({ email })
-                });
-
-                if (!res) return;
-
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error);
-
-                showToast(data.message || 'Report sent successfully!', 'success');
-                emailModal.style.display = 'none';
-            } catch (err) {
-                showToast(err.message, 'error');
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        });
 
         function showModal(clause) {
             document.getElementById('modal-clause-type').innerText = clause.clause_type.replace(/_/g, ' ').toUpperCase();
@@ -1939,7 +1803,6 @@
                     </div>
                 `).join('');
             }
-
             riskModal.style.display = 'block';
         }
 
@@ -1947,12 +1810,9 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-
             const icon = type === 'success' ? '✅' : '❌';
             toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
-
             container.appendChild(toast);
-
             setTimeout(() => {
                 toast.style.animation = 'fadeOut 0.3s ease-in forwards';
                 setTimeout(() => toast.remove(), 300);
