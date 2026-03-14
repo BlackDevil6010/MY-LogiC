@@ -11,30 +11,30 @@
 
         :root {
             /* Core Variables */
-            --bg-color: #060913; 
+            --bg-color: #060913;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --primary-color: #6366f1;
             --primary-hover: #4f46e5;
-            
+
             /* Glassmorphism */
             --bg-glass: rgba(17, 24, 39, 0.55);
             --bg-glass-hover: rgba(31, 41, 55, 0.70);
             --border-glass: rgba(255, 255, 255, 0.1);
             --glass-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
-            
+
             /* Risks */
             --risk-critical: #ff4757;
             --risk-high: #ffa502;
             --risk-medium: #eccc68;
             --risk-low: #2ed573;
-            
+
             /* Gradients & Backgrounds */
             --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
             --bg-gradient: radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.25), transparent 25%),
-                           radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.25), transparent 25%),
-                           linear-gradient(to bottom, rgba(6, 9, 19, 0.88), rgba(15, 23, 42, 0.95)),
-                           url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2000&auto=format&fit=crop');
+                radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.25), transparent 25%),
+                linear-gradient(to bottom, rgba(6, 9, 19, 0.88), rgba(15, 23, 42, 0.95)),
+                url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2000&auto=format&fit=crop');
         }
 
         [data-theme="light"] {
@@ -46,9 +46,9 @@
             --border-glass: rgba(255, 255, 255, 0.5);
             --glass-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15);
             --bg-gradient: radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 25%),
-                           radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15), transparent 25%),
-                           linear-gradient(to bottom, rgba(248, 250, 252, 0.85), rgba(241, 245, 249, 0.95)),
-                           url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2000&auto=format&fit=crop');
+                radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15), transparent 25%),
+                linear-gradient(to bottom, rgba(248, 250, 252, 0.85), rgba(241, 245, 249, 0.95)),
+                url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2000&auto=format&fit=crop');
         }
 
         * {
@@ -71,11 +71,15 @@
             line-height: 1.6;
         }
 
-        h1, h2, h3 {
+        h1,
+        h2,
+        h3 {
             font-family: 'Playfair Display', serif;
         }
 
-        h4, h5, h6 {
+        h4,
+        h5,
+        h6 {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
@@ -243,7 +247,10 @@
         .upload-container::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: var(--accent-gradient);
             opacity: 0;
             transition: opacity 0.4s ease;
@@ -321,7 +328,10 @@
         .btn.primary::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #6366f1 100%);
             border-radius: inherit;
             z-index: -1;
@@ -369,7 +379,7 @@
             background: var(--bg-glass-hover);
             border-radius: 999px;
             overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .progress-fill {
@@ -383,6 +393,120 @@
 
         .hidden {
             display: none !important;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] .tab-btn {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            background: var(--accent-gradient);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeScale 0.4s ease forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .document-viewer {
+            padding: 2rem;
+            background: #cbd5e1;
+            /* gray background for the workspace */
+            border-radius: 16px;
+            overflow-y: auto;
+            max-height: 75vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .document-page {
+            background: #ffffff;
+            color: #000000;
+            width: 100%;
+            max-width: 210mm;
+            /* A4 width */
+            min-height: 297mm;
+            /* A4 height */
+            padding: 20mm;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            font-family: 'Times New Roman', Times, serif;
+            /* classic document font */
+            font-size: 12pt;
+            line-height: 1.6;
+            text-align: justify;
+            white-space: pre-wrap;
+        }
+
+        .document-page .doc-clause {
+            /* inline for natural text flow */
+            display: inline;
+            transition: background 0.2s ease;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .document-page .doc-clause:hover {
+            background: rgba(99, 102, 241, 0.15);
+            /* light primary highlight */
+        }
+
+        .document-page .doc-clause[data-risk="critical"] {
+            text-decoration: underline;
+            text-decoration-color: #ff4757;
+            text-decoration-thickness: 3px;
+            text-underline-offset: 3px;
+            background: rgba(255, 71, 87, 0.05);
+            /* very faint red bg */
+        }
+
+        .document-page .doc-clause[data-risk="high"] {
+            text-decoration: underline;
+            text-decoration-color: #ffa502;
+            text-decoration-thickness: 3px;
+            text-underline-offset: 3px;
+            background: rgba(255, 165, 2, 0.05);
+        }
+
+        .document-page .doc-clause[data-risk="medium"] {
+            text-decoration: underline;
+            text-decoration-color: #eccc68;
+            text-decoration-thickness: 3px;
+            text-underline-offset: 3px;
+            background: rgba(236, 204, 104, 0.05);
         }
 
         /* Analysis Dashboard */
@@ -401,9 +525,23 @@
             text-transform: uppercase;
         }
 
-        .badge.completed { background: rgba(46, 213, 115, 0.15); color: var(--risk-low); border: 1px solid rgba(46, 213, 115, 0.3); }
-        .badge.analyzing { background: rgba(236, 204, 104, 0.15); color: var(--risk-medium); border: 1px solid rgba(236, 204, 104, 0.3); }
-        .badge.failed { background: rgba(255, 71, 87, 0.15); color: var(--risk-critical); border: 1px solid rgba(255, 71, 87, 0.3); }
+        .badge.completed {
+            background: rgba(46, 213, 115, 0.15);
+            color: var(--risk-low);
+            border: 1px solid rgba(46, 213, 115, 0.3);
+        }
+
+        .badge.analyzing {
+            background: rgba(236, 204, 104, 0.15);
+            color: var(--risk-medium);
+            border: 1px solid rgba(236, 204, 104, 0.3);
+        }
+
+        .badge.failed {
+            background: rgba(255, 71, 87, 0.15);
+            color: var(--risk-critical);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
 
         .dashboard-grid {
             display: grid;
@@ -428,12 +566,20 @@
         .stats-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
             background: var(--accent-gradient);
         }
 
-        .stats-card.risk-high::before { background: var(--risk-high); }
-        .stats-card.risk-medium::before { background: var(--risk-medium); }
+        .stats-card.risk-high::before {
+            background: var(--risk-high);
+        }
+
+        .stats-card.risk-medium::before {
+            background: var(--risk-medium);
+        }
 
         .stats-card h4 {
             color: var(--text-muted);
@@ -575,13 +721,32 @@
             margin-bottom: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .risk-badge.critical { background: rgba(255, 71, 87, 0.15); color: var(--risk-critical); border: 1px solid rgba(255, 71, 87, 0.3); }
-        .risk-badge.high { background: rgba(255, 165, 2, 0.15); color: var(--risk-high); border: 1px solid rgba(255, 165, 2, 0.3); }
-        .risk-badge.medium { background: rgba(236, 204, 104, 0.15); color: var(--risk-medium); border: 1px solid rgba(236, 204, 104, 0.3); }
-        .risk-badge.low { background: rgba(46, 213, 115, 0.15); color: var(--risk-low); border: 1px solid rgba(46, 213, 115, 0.3); }
+        .risk-badge.critical {
+            background: rgba(255, 71, 87, 0.15);
+            color: var(--risk-critical);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
+
+        .risk-badge.high {
+            background: rgba(255, 165, 2, 0.15);
+            color: var(--risk-high);
+            border: 1px solid rgba(255, 165, 2, 0.3);
+        }
+
+        .risk-badge.medium {
+            background: rgba(236, 204, 104, 0.15);
+            color: var(--risk-medium);
+            border: 1px solid rgba(236, 204, 104, 0.3);
+        }
+
+        .risk-badge.low {
+            background: rgba(46, 213, 115, 0.15);
+            color: var(--risk-low);
+            border: 1px solid rgba(46, 213, 115, 0.3);
+        }
 
         /* History List */
         .history-item {
@@ -641,7 +806,7 @@
             background: var(--bg-glass);
             backdrop-filter: blur(16px);
             border: 1px solid var(--border-glass);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             animation: slideInBottom 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             color: var(--text-main);
             display: flex;
@@ -650,8 +815,13 @@
             font-weight: 500;
         }
 
-        .toast.error { border-left: 4px solid var(--risk-critical); }
-        .toast.success { border-left: 4px solid var(--risk-low); }
+        .toast.error {
+            border-left: 4px solid var(--risk-critical);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--risk-low);
+        }
 
         /* Modal */
         .modal {
@@ -662,7 +832,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.6);
+            background-color: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
@@ -699,7 +869,7 @@
         }
 
         .full-text-container {
-            background: rgba(0,0,0,0.15);
+            background: rgba(0, 0, 0, 0.15);
             padding: 2rem;
             border-radius: 12px;
             margin: 1.5rem 0 2.5rem;
@@ -709,11 +879,11 @@
         }
 
         [data-theme="light"] .full-text-container {
-            background: rgba(255,255,255,0.5);
+            background: rgba(255, 255, 255, 0.5);
         }
 
         .risk-detail-card {
-            background: rgba(0,0,0,0.15);
+            background: rgba(0, 0, 0, 0.15);
             border-left: 4px solid var(--primary-color);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
@@ -724,25 +894,48 @@
         }
 
         [data-theme="light"] .risk-detail-card {
-            background: rgba(255,255,255,0.7);
+            background: rgba(255, 255, 255, 0.7);
         }
 
-        .mt-4 { margin-top: 2rem; }
+        .mt-4 {
+            margin-top: 2rem;
+        }
 
         /* Animations */
         @keyframes fadeScale {
-            from { opacity: 0; transform: scale(0.97) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.97) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         @keyframes slideInBottom {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes fadeOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(30px); }
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(30px);
+            }
         }
 
         /* Theme Toggle */
@@ -777,13 +970,13 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(255,255,255,0.1);
+            background-color: rgba(255, 255, 255, 0.1);
             transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid var(--border-glass);
         }
 
         [data-theme="light"] .slider {
-            background-color: rgba(0,0,0,0.1);
+            background-color: rgba(0, 0, 0, 0.1);
         }
 
         .slider:before {
@@ -796,15 +989,15 @@
             background-color: var(--text-main);
             transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
-        input:checked + .slider {
+        input:checked+.slider {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
 
-        input:checked + .slider:before {
+        input:checked+.slider:before {
             transform: translateX(24px);
             background-color: #fff;
         }
@@ -877,12 +1070,16 @@
                 </a>
             </nav>
 
-            <div id="user-profile" style="margin-top: auto; padding: 1.5rem 0.5rem; border-top: 1px solid var(--border-glass); display: flex; align-items: center; gap: 0.75rem;">
-                <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; font-size: 0.9rem;" id="user-avatar">
-                   ?
+            <div id="user-profile"
+                style="margin-top: auto; padding: 1.5rem 0.5rem; border-top: 1px solid var(--border-glass); display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; font-size: 0.9rem;"
+                    id="user-avatar">
+                    ?
                 </div>
                 <div style="flex: 1; min-width: 0;">
-                    <p style="font-size: 0.85rem; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;" id="user-email-display">Loading...</p>
+                    <p style="font-size: 0.85rem; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                        id="user-email-display">Loading...</p>
+                    <p style="font-size: 0.7rem; color: var(--text-muted);">Standard Plan</p>
                 </div>
             </div>
 
@@ -967,49 +1164,75 @@
                         <h1 id="analysis-filename">Loading...</h1>
                         <p id="analysis-status">Status: <span class="badge">Processing</span></p>
                     </div>
-                    <button class="btn secondary" id="btn-back">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="19" y1="12" x2="5" y2="12"></line>
-                            <polyline points="12 19 5 12 12 5"></polyline>
-                        </svg>
-                        Back
-                    </button>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn primary" id="btn-email-report" style="display: none;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                </path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Email Report
+                        </button>
+                        <button class="btn secondary" id="btn-back">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="19" y1="12" x2="5" y2="12"></line>
+                                <polyline points="12 19 5 12 12 5"></polyline>
+                            </svg>
+                            Back
+                        </button>
+                    </div>
                 </header>
 
-                <div class="dashboard-grid">
-                    <!-- Summary Cards -->
-                    <div class="summary-cards">
-                        <div class="glass-panel stats-card">
-                            <h4>Total Clauses</h4>
-                            <div class="stats-value" id="stat-total">0</div>
-                        </div>
-                        <div class="glass-panel stats-card risk-high">
-                            <h4>High Risks</h4>
-                            <div class="stats-value" id="stat-high">0</div>
-                        </div>
-                        <div class="glass-panel stats-card risk-medium">
-                            <h4>Medium Risks</h4>
-                            <div class="stats-value" id="stat-med">0</div>
-                        </div>
-                    </div>
-
-                    <!-- Charts -->
-                    <div class="charts-container glass-panel">
-                        <div class="chart-wrapper">
-                            <canvas id="riskChart"></canvas>
-                        </div>
-                        <div class="chart-wrapper">
-                            <canvas id="typeChart"></canvas>
-                        </div>
-                    </div>
+                <div class="tabs-container">
+                    <button class="tab-btn active" data-tab="tab-dashboard">Analysis Dashboard</button>
+                    <button class="tab-btn" data-tab="tab-document">Real Document</button>
                 </div>
 
-                <!-- Clauses Sections -->
-                <div class="clauses-container glass-panel">
-                    <h3>Extracted Clauses by Category</h3>
-                    <div id="clauses-grouped-container">
-                        <!-- Populated via JS grouped by clause type -->
+                <div id="tab-dashboard" class="tab-content active">
+                    <div class="dashboard-grid">
+                        <!-- Summary Cards -->
+                        <div class="summary-cards">
+                            <div class="glass-panel stats-card">
+                                <h4>Total Clauses</h4>
+                                <div class="stats-value" id="stat-total">0</div>
+                            </div>
+                            <div class="glass-panel stats-card risk-high">
+                                <h4>High Risks</h4>
+                                <div class="stats-value" id="stat-high">0</div>
+                            </div>
+                            <div class="glass-panel stats-card risk-medium">
+                                <h4>Medium Risks</h4>
+                                <div class="stats-value" id="stat-med">0</div>
+                            </div>
+                        </div>
+
+                        <!-- Charts -->
+                        <div class="charts-container glass-panel">
+                            <div class="chart-wrapper">
+                                <canvas id="riskChart"></canvas>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="typeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clauses Sections -->
+                    <div class="clauses-container glass-panel">
+                        <h3>Extracted Clauses by Category</h3>
+                        <div id="clauses-grouped-container">
+                            <!-- Populated via JS grouped by clause type -->
+                        </div>
+                    </div>
+                </div> <!-- End tab-dashboard -->
+
+                <div id="tab-document" class="tab-content">
+                    <div class="glass-panel document-viewer">
+                        <div class="document-page" id="full-document-viewer">
+                            <!-- Populated via JS -->
+                        </div>
                     </div>
                 </div>
 
@@ -1025,6 +1248,31 @@
                         <div id="modal-risks-container"></div>
                     </div>
                 </div>
+
+                <!-- Email Modal -->
+                <div id="email-modal" class="modal">
+                    <div class="modal-content" style="max-width: 500px; padding: 2.5rem;">
+                        <span class="close-btn" id="close-email-modal">&times;</span>
+                        <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--text-main);">Share Report</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 1rem;">Send the full risk
+                            analysis report to any email address.</p>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label for="email-input"
+                                style="display: block; margin-bottom: 0.75rem; font-weight: 500; color: var(--text-main);">Email
+                                Address</label>
+                            <input type="email" id="email-input" placeholder="colleague@company.com"
+                                style="width: 100%; padding: 1rem 1.25rem; border-radius: 12px; border: 1px solid var(--border-glass); background: rgba(0,0,0,0.1); color: var(--text-main); font-family: inherit; font-size: 1rem; outline: none; transition: border-color 0.3s; margin-bottom: 1rem;">
+                        </div>
+                        <button class="btn primary" id="btn-send-email" style="width: 100%;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                            Send Report
+                        </button>
+                    </div>
+                </div>
             </section>
         </main>
     </div>
@@ -1033,9 +1281,7 @@
     <div id="toast-container" class="toast-container"></div>
 
     <script>
-
-// Backend API URL
-const API_BASE = "https://my-logic-production.up.railway.app/api";
+        const API_BASE = "https://my-logic-production.up.railway.app/api";
         // State
         let currentContractId = null;
         let charts = {};
@@ -1049,8 +1295,8 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
 
         // Event Listeners
         document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication
             const token = localStorage.getItem('token');
-
             if (!token) {
                 window.location.href = 'auth.html';
                 return;
@@ -1061,7 +1307,9 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
             initDragAndDrop();
             initLogout();
             initUserProfile();
+            initTabs();
 
+            // Load history initially
             loadHistory();
         });
 
@@ -1073,13 +1321,13 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
                     localStorage.removeItem('token');
                     localStorage.removeItem('userEmail');
                     window.location.href = 'auth.html';
-                    showToast('Logged out. (Redirect prevented in preview)', 'success');
                 });
             }
         }
-          async function initUserProfile() {
+
+        async function initUserProfile() {
             let email = localStorage.getItem('userEmail');
-            
+
             if (!email) {
                 try {
                     const res = await authFetch(`${API_BASE}/auth/current-user`);
@@ -1104,7 +1352,7 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
         // -----------------------------------------------------------------------------
         // REAL API IMPLEMENTATION
         // -----------------------------------------------------------------------------
-   async function authFetch(url, options = {}) {
+        async function authFetch(url, options = {}) {
             const token = localStorage.getItem('token');
             if (!token) {
                 window.location.href = 'auth.html';
@@ -1130,7 +1378,7 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
 
             try {
                 const response = await fetch(url, fetchOptions);
-                
+
                 // Handle unauthorized or invalid tokens (expired or malformed)
                 if (response.status === 401 || response.status === 422) {
                     localStorage.removeItem('token');
@@ -1151,7 +1399,7 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
         function initNavigation() {
             navItems.forEach(item => {
                 const viewId = item.getAttribute('data-view');
-                
+
                 // Only add navigation listener to items with a data-view attribute
                 if (viewId) {
                     item.addEventListener('click', (e) => {
@@ -1188,6 +1436,20 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
             if (activeNav) {
                 activeNav.classList.add('active');
             }
+        }
+
+        function initTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                    btn.classList.add('active');
+                    const tabId = btn.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
         }
 
         // Theme
@@ -1356,7 +1618,7 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
             try {
                 console.log(`Attempting to delete contract ID: ${id}`);
                 const res = await authFetch(`${API_BASE}/contracts/${id}`, { method: 'DELETE' });
-                
+
                 if (!res) {
                     console.error('Delete request failed: Empty response (likely 401 Redirect)');
                     return;
@@ -1395,7 +1657,10 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
                 statusEl.innerHTML = `Status: <span class="badge ${data.status}">${data.status}</span>`;
 
                 if (data.status === 'completed') {
+                    document.getElementById('btn-email-report').style.display = 'inline-flex';
                     renderDashboard(data.clauses);
+                } else {
+                    document.getElementById('btn-email-report').style.display = 'none';
                 }
             } catch (err) {
                 showToast(err.message, 'error');
@@ -1431,7 +1696,7 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
             clauses.forEach((c) => {
                 // Tally risks
                 if (c.risks.length === 0) {
-                    riskData.low += 1; 
+                    riskData.low += 1;
                 } else {
                     c.risks.forEach(r => {
                         riskData[r.severity] = (riskData[r.severity] || 0) + 1;
@@ -1478,7 +1743,7 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
                 typeClauses.forEach((c, idx) => {
                     const tr = document.createElement('tr');
                     let riskHtml = '';
-                    
+
                     if (c.risks.length === 0) {
                         riskHtml = '<span class="risk-badge low">CLEAN</span>';
                     } else {
@@ -1499,6 +1764,42 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
 
                 container.appendChild(groupDiv);
             }
+
+            // Reconstruct Real Document
+            const docViewer = document.getElementById('full-document-viewer');
+            docViewer.innerHTML = '';
+
+            // Sort clauses by segment_index
+            const sortedClauses = [...clauses].sort((a, b) => a.segment_index - b.segment_index);
+
+            sortedClauses.forEach(c => {
+                let highestRisk = 'low';
+                let riskScore = 0;
+
+                c.risks.forEach(r => {
+                    let score = 0;
+                    if (r.severity === 'medium') score = 1;
+                    if (r.severity === 'high') score = 2;
+                    if (r.severity === 'critical') score = 3;
+
+                    if (score > riskScore) {
+                        riskScore = score;
+                        highestRisk = r.severity;
+                    }
+                });
+
+                const p = document.createElement('span');
+                p.className = 'doc-clause';
+                if (highestRisk !== 'low') {
+                    p.setAttribute('data-risk', highestRisk);
+                }
+
+                // Add a space after the text so it flows nicely as inline elements
+                p.innerText = c.text + ' ';
+                p.onclick = () => showModal(c);
+
+                docViewer.appendChild(p);
+            });
 
             renderCharts(riskData, typeData);
         }
@@ -1566,10 +1867,56 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
             }
         }
 
-        // Modal
-        const modal = document.getElementById('risk-modal');
-        document.querySelector('.close-btn').onclick = () => modal.style.display = 'none';
-        window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; }
+        // Modals
+        const riskModal = document.getElementById('risk-modal');
+        const emailModal = document.getElementById('email-modal');
+
+        document.querySelector('.close-btn').onclick = () => riskModal.style.display = 'none';
+        document.getElementById('close-email-modal').onclick = () => emailModal.style.display = 'none';
+
+        window.onclick = (e) => {
+            if (e.target == riskModal) riskModal.style.display = 'none';
+            if (e.target == emailModal) emailModal.style.display = 'none';
+        }
+
+        // Email Feature
+        document.getElementById('btn-email-report').addEventListener('click', () => {
+            document.getElementById('email-input').value = '';
+            emailModal.style.display = 'block';
+        });
+
+        document.getElementById('btn-send-email').addEventListener('click', async () => {
+            const email = document.getElementById('email-input').value.trim();
+            if (!email || !email.includes('@')) {
+                showToast('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-send-email');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Sending...';
+            btn.disabled = true;
+
+            try {
+                const res = await authFetch(`${API_BASE}/analysis/${currentContractId}/email`, {
+                    method: 'POST',
+                    body: JSON.stringify({ email })
+                });
+
+                if (!res) return;
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+
+                showToast(data.message || 'Report sent successfully!', 'success');
+                emailModal.style.display = 'none';
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
 
         function showModal(clause) {
             document.getElementById('modal-clause-type').innerText = clause.clause_type.replace(/_/g, ' ').toUpperCase();
@@ -1593,7 +1940,7 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
                 `).join('');
             }
 
-            modal.style.display = 'block';
+            riskModal.style.display = 'block';
         }
 
         function showToast(message, type = 'success') {
@@ -1623,15 +1970,4 @@ const API_BASE = "https://my-logic-production.up.railway.app/api";
     </script>
 </body>
 
-
 </html>
-
-
-
-
-
-
-
-
-
-
