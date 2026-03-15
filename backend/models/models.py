@@ -76,3 +76,25 @@ class RiskFlag(db.Model):
     severity = db.Column(db.String(20), nullable=False)
     confidence = db.Column(db.Float, nullable=False)
     description = db.Column(db.Text, nullable=False)
+
+
+# ✅ NEW TABLE FOR STANDARD CLAUSES
+class StandardClause(db.Model):
+    __tablename__ = "standard_clauses"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    category = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    risk_level = db.Column(db.String(50))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "category": self.category,
+            "content": self.content,
+            "risk_level": self.risk_level,
+            "created_at": self.created_at.isoformat()
+        }
