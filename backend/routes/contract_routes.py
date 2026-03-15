@@ -2,11 +2,11 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from models.models import StandardClause
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from extensions import db
+from models.models import StandardClause
 from models.models import Contract, Clause, RiskFlag, StandardClause
 from utils.file_parser import FileParser
 from services.clause_extractor import ClauseExtractor
@@ -228,7 +228,17 @@ def get_standard_clauses():
         StandardClause.created_at.desc()
     ).all()
 
-    return jsonify([c.to_dict() for c in clauses]), 200
+   return jsonify([
+    {
+        "id": c.id,
+        "title": c.title,
+        "category": c.category,
+        "content": c.content,
+        "risk_level": c.risk_level,
+        "created_at": c.created_at.isoformat()
+    }
+    for c in clauses
+]), 200
 
 
 @bp.route("/standard-clauses", methods=["POST"])
