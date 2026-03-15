@@ -2,6 +2,7 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from models.models import StandardClause
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -227,17 +228,7 @@ def get_standard_clauses():
         StandardClause.created_at.desc()
     ).all()
 
-   return jsonify([
-    {
-        "id": c.id,
-        "title": c.title,
-        "category": c.category,
-        "content": c.content,
-        "risk_level": c.risk_level,
-        "created_at": c.created_at.isoformat()
-    }
-    for c in clauses
-]), 200
+    return jsonify([c.to_dict() for c in clauses]), 200
 
 
 @bp.route("/standard-clauses", methods=["POST"])
@@ -283,4 +274,4 @@ def delete_standard_clause(clause_id):
     db.session.delete(clause)
     db.session.commit()
 
-    return jsonify({"message": "Clause deleted successfully"}), 200
+    return jsonify({"message": "Clause deleted successfully"}), 200 
