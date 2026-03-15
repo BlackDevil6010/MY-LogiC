@@ -6,7 +6,6 @@ from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from extensions import db
-from models.models import StandardClause
 from models.models import Contract, Clause, RiskFlag, StandardClause
 from utils.file_parser import FileParser
 from services.clause_extractor import ClauseExtractor
