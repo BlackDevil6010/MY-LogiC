@@ -1058,6 +1058,15 @@
                     </svg>
                     Analysis
                 </a>
+                <a href="#" class="nav-item" data-view="standard-view">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 4h16v16H4z"></path>
+        <line x1="8" y1="8" x2="16" y2="8"></line>
+        <line x1="8" y1="12" x2="16" y2="12"></line>
+        <line x1="8" y1="16" x2="12" y2="16"></line>
+    </svg>
+    Standard Clauses
+</a>
             </nav>
 
             <div id="user-profile"
@@ -1230,6 +1239,17 @@
                     </div>
                 </div>
             </section>
+            <!-- Standard Clauses View -->
+<section id="standard-view" class="view-section">
+    <header>
+        <h1>Standard Clauses</h1>
+        <p>View and manage predefined standard contract clauses.</p>
+    </header>
+
+    <div id="standard-clauses-container" class="glass-panel" style="padding: 2rem;">
+        <p style="text-align:center;">Loading clauses...</p>
+    </div>
+</section>
         </main>
     </div>
 
@@ -1346,7 +1366,51 @@
                 throw error;
             }
         }
+        async function loadStandardClauses() {
+    const container = document.getElementById('standard-clauses-container');
+    container.innerHTML = '<p style="text-align:center;">Loading...</p>';
 
+    try {
+        const res = await authFetch(`${API_BASE}/standard-clauses`);
+        if (!res) return;
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.error || 'Failed to load clauses');
+        }
+
+        if (data.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color: var(--text-muted);">No standard clauses found.</p>';
+            return;
+        }
+
+        container.innerHTML = '';
+
+        data.forEach(clause => {
+            const div = document.createElement('div');
+            div.className = 'glass-panel';
+            div.style.padding = '1.5rem';
+            div.style.marginBottom = '1rem';
+
+            div.innerHTML = `
+                <h3 style="margin-bottom: 0.5rem;">${clause.title}</h3>
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">
+                    Category: ${clause.category}
+                </p>
+                <p style="margin-bottom: 1rem;">${clause.content}</p>
+                <span class="risk-badge ${clause.risk_level || 'low'}">
+                    ${clause.risk_level || 'low'}
+                </span>
+            `;
+
+            container.appendChild(div);
+        });
+
+    } catch (err) {
+        container.innerHTML = `<p style="color:red;">${err.message}</p>`;
+    }
+}
         // Navigation
         function initNavigation() {
             navItems.forEach(item => {
@@ -1359,6 +1423,9 @@
 
                         if (viewId === 'history-view') {
                             loadHistory();
+                        }
+                        if (viewId === 'standard-view') {
+                            loadStandardClauses();
                         }
                     });
                 }
