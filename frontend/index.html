@@ -1264,13 +1264,6 @@
                         <p id="analysis-status">Status: <span class="badge">Processing</span></p>
                     </div>
                     <div style="display: flex; gap: 1rem;">
-                        <button class="btn primary" id="btn-email-report" style="display: none;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                <polyline points="22,6 12,13 2,6"></polyline>
-                            </svg>
-                            Email Report
-                        </button>
                         <button class="btn secondary" id="btn-back">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1506,9 +1499,6 @@
                     ]
                 });
             }
-            if (url.includes('/analysis/') && url.includes('/email') && method === 'POST') {
-                return createMockResponse({ success: true, message: "Report sent to email successfully" });
-            }
             if (url.includes('/contracts') && method === 'GET') {
                 return createMockResponse([
                     { id: 101, filename: "Vendor_Agreement_2024.pdf", upload_date: new Date().toISOString(), status: "completed" },
@@ -1584,34 +1574,6 @@
                 btnBack.addEventListener('click', () => {
                     switchView('history-view');
                     loadHistory();
-                });
-            }
-
-            const btnEmail = document.getElementById('btn-email-report');
-            if (btnEmail) {
-                btnEmail.addEventListener('click', async () => {
-                    if (!currentContractId) return;
-                    const email = localStorage.getItem('userEmail') || 'your email account';
-                    
-                    // Show initial sending toast
-                    showToast(`Preparing report for ${email}...`, 'success');
-                    
-                    try {
-                        const res = await authFetch(`${API_BASE}/analysis/${currentContractId}/email`, {
-                            method: 'POST'
-                        });
-                        
-                        if (res && res.ok) {
-                            // Simulate network delay for a better UX
-                            setTimeout(() => {
-                                showToast(`Report successfully emailed to ${email}`, 'success');
-                            }, 1200);
-                        } else {
-                            showToast('Failed to send report.', 'error');
-                        }
-                    } catch (err) {
-                        showToast('Error sending email.', 'error');
-                    }
                 });
             }
         }
@@ -1827,7 +1789,6 @@
         async function loadAnalysis(id) {
             currentContractId = id;
             document.getElementById('nav-analysis').style.display = 'flex';
-            document.getElementById('btn-email-report').style.display = 'inline-flex';
             switchView('analysis-view');
 
             try {
