@@ -1264,6 +1264,14 @@
                         <p id="analysis-status">Status: <span class="badge">Processing</span></p>
                     </div>
                     <div style="display: flex; gap: 1rem;">
+                        <button class="btn primary" id="btn-email-report">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Email Report
+                        </button>
                         <button class="btn secondary" id="btn-back">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1394,6 +1402,7 @@
             initLogout();
             initUserProfile();
             initTabs();
+            initEmailReportButton();
 
             // Load history initially
             loadHistory();
@@ -1407,6 +1416,18 @@
                     localStorage.removeItem('token');
                     localStorage.removeItem('userEmail');
                     window.location.href = 'auth.html';
+                });
+            }
+        }
+
+        function initEmailReportButton() {
+            const emailBtn = document.getElementById('btn-email-report');
+            if (emailBtn) {
+                emailBtn.addEventListener('click', () => {
+                    if (currentContractId) {
+                        const userEmail = localStorage.getItem('userEmail') || document.getElementById('user-email-display').innerText;
+                        sendEmailReport(currentContractId, userEmail);
+                    }
                 });
             }
         }
@@ -1460,6 +1481,10 @@
             }
             if (url.includes('/analyze')) {
                 return createMockResponse({ success: true });
+            }
+            // Mock Email Endpoint
+            if (url.includes('/email-report')) {
+                return createMockResponse({ success: true, message: "Email sent successfully" });
             }
             if (url.includes('/analysis/') && url.includes('/summary')) {
                 return createMockResponse({
@@ -1712,12 +1737,41 @@
                 setTimeout(() => {
                     document.getElementById('upload-progress').classList.add('hidden');
                     showToast('Analysis complete!', 'success');
-                    loadAnalysis(contractId);
+                    // Automatically load the analysis AND trigger the auto-email flag
+                    loadAnalysis(contractId, true);
                 }, 1000);
 
             } catch (err) {
                 showToast(err.message, 'error');
                 document.getElementById('upload-progress').classList.add('hidden');
+            }
+        }
+
+        // Email Feature Function
+        async function sendEmailReport(contractId, email) {
+            if (!email || email === 'Loading...' || email === 'User Account') {
+                email = 'demo.user@company.com'; // Default mock email
+            }
+
+            showToast(`Sending analysis report to ${email}...`, 'success');
+
+            try {
+                const res = await authFetch(`${API_BASE}/analysis/${contractId}/email-report`, {
+                    method: 'POST',
+                    body: JSON.stringify({ email: email })
+                });
+
+                // Add artificial delay to feel like email is sending
+                setTimeout(() => {
+                    if (res && res.ok) {
+                        showToast(`Report successfully sent to ${email}!`, 'success');
+                    } else {
+                        showToast(`Failed to send email to ${email}`, 'error');
+                    }
+                }, 1500);
+
+            } catch (err) {
+                showToast('Network error while sending email', 'error');
             }
         }
 
@@ -1786,7 +1840,7 @@
             }
         }
 
-        async function loadAnalysis(id) {
+        async function loadAnalysis(id, autoEmail = false) {
             currentContractId = id;
             document.getElementById('nav-analysis').style.display = 'flex';
             switchView('analysis-view');
@@ -1805,6 +1859,14 @@
 
                 if (data.status === 'completed') {
                     renderDashboard(data.clauses);
+                    
+                    // Trigger Automatic Email if passed from startAnalysis
+                    if (autoEmail) {
+                        setTimeout(() => {
+                            const userEmail = localStorage.getItem('userEmail') || document.getElementById('user-email-display').innerText;
+                            sendEmailReport(id, userEmail);
+                        }, 500); // Small delay to let UI render before showing email sending toast
+                    }
                 }
             } catch (err) {
                 showToast(err.message, 'error');
