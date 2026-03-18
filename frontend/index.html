@@ -71,8 +71,17 @@
             line-height: 1.6;
         }
 
-        h1, h2, h3 { font-family: 'Playfair Display', serif; }
-        h4, h5, h6 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1,
+        h2,
+        h3 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        h4,
+        h5,
+        h6 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
         /* Glass Panel Utility */
         .glass-panel {
@@ -238,7 +247,10 @@
         .upload-container::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: var(--accent-gradient);
             opacity: 0;
             transition: opacity 0.4s ease;
@@ -300,12 +312,6 @@
             justify-content: center;
             gap: 0.5rem;
         }
-        
-        .btn-sm {
-            padding: 0.6rem 1.2rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-        }
 
         .btn:active {
             transform: scale(0.96);
@@ -322,7 +328,10 @@
         .btn.primary::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #6366f1 100%);
             border-radius: inherit;
             z-index: -1;
@@ -436,6 +445,7 @@
         .document-viewer {
             padding: 2rem;
             background: #cbd5e1;
+            /* gray background for the workspace */
             border-radius: 16px;
             overflow-y: auto;
             max-height: 75vh;
@@ -448,10 +458,13 @@
             color: #000000;
             width: 100%;
             max-width: 210mm;
+            /* A4 width */
             min-height: 297mm;
+            /* A4 height */
             padding: 20mm;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             font-family: 'Times New Roman', Times, serif;
+            /* classic document font */
             font-size: 12pt;
             line-height: 1.6;
             text-align: justify;
@@ -459,6 +472,7 @@
         }
 
         .document-page .doc-clause {
+            /* inline for natural text flow */
             display: inline;
             transition: background 0.2s ease;
             cursor: pointer;
@@ -467,6 +481,7 @@
 
         .document-page .doc-clause:hover {
             background: rgba(99, 102, 241, 0.15);
+            /* light primary highlight */
         }
 
         .document-page .doc-clause[data-risk="critical"] {
@@ -475,6 +490,7 @@
             text-decoration-thickness: 3px;
             text-underline-offset: 3px;
             background: rgba(255, 71, 87, 0.05);
+            /* very faint red bg */
         }
 
         .document-page .doc-clause[data-risk="high"] {
@@ -548,6 +564,14 @@
             overflow: hidden;
         }
 
+        .stats-card.risk-high::before {
+            background: var(--risk-high);
+        }
+
+        .stats-card.risk-medium::before {
+            background: var(--risk-medium);
+        }
+
         .stats-card h4 {
             color: var(--text-muted);
             font-size: 1rem;
@@ -595,6 +619,17 @@
             font-family: 'Playfair Display', serif;
         }
 
+        .clause-group-header .badge {
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border-glass);
+        }
+
+        [data-theme="light"] .clause-group-header .badge {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
         /* Clauses Table */
         .clauses-container {
             padding: 2rem;
@@ -630,6 +665,18 @@
             background: rgba(255, 255, 255, 0.02);
             border-top: 1px solid transparent;
             border-bottom: 1px solid transparent;
+        }
+
+        .data-table tr td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+            border-left: 1px solid transparent;
+        }
+
+        .data-table tr td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border-right: 1px solid transparent;
         }
 
         .data-table tbody tr {
@@ -718,6 +765,89 @@
             background: rgba(255, 255, 255, 0.8);
         }
 
+        .history-info h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .history-info p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Standard Clauses Library */
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .standard-clause-card {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .clause-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 1rem;
+        }
+
+        .clause-header h3 {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .standard-text-box {
+            font-style: italic;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            color: var(--text-main);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        [data-theme="light"] .standard-text-box {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .clause-meta {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.15);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        [data-theme="light"] .clause-meta {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .clause-meta strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.8rem;
+        }
+
         /* Comparison Tab Styles */
         .comparison-grid {
             display: grid;
@@ -744,44 +874,18 @@
             padding-bottom: 0.5rem;
         }
 
-        .comparison-col.uploaded h4 { color: var(--primary-color); }
-        .comparison-col.standard h4 { color: var(--risk-low); }
+        .comparison-col.uploaded h4 {
+            color: var(--primary-color);
+        }
+
+        .comparison-col.standard h4 {
+            color: var(--risk-low);
+        }
 
         .comparison-text {
             font-size: 0.95rem;
             line-height: 1.7;
             color: var(--text-main);
-        }
-
-        .comparison-textarea {
-            width: 100%;
-            min-height: 180px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px dashed var(--border-glass);
-            color: var(--text-main);
-            padding: 1rem;
-            border-radius: 8px;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 0.95rem;
-            line-height: 1.7;
-            resize: vertical;
-            transition: all 0.3s ease;
-        }
-        
-        .comparison-textarea:focus {
-            outline: none;
-            border-style: solid;
-            border-color: var(--primary-color);
-            background: rgba(0, 0, 0, 0.2);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-        }
-
-        [data-theme="light"] .comparison-textarea {
-            background: rgba(0, 0, 0, 0.02);
-        }
-
-        [data-theme="light"] .comparison-textarea:focus {
-            background: rgba(255, 255, 255, 0.8);
         }
 
         /* Toast Notifications */
@@ -810,17 +914,26 @@
             font-weight: 500;
         }
 
-        .toast.error { border-left: 4px solid var(--risk-critical); }
-        .toast.success { border-left: 4px solid var(--risk-low); }
+        .toast.error {
+            border-left: 4px solid var(--risk-critical);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--risk-low);
+        }
 
         /* Modal */
         .modal {
             display: none;
             position: fixed;
             z-index: 100;
-            left: 0; top: 0; width: 100%; height: 100%;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         .modal-content {
@@ -840,14 +953,19 @@
 
         .close-btn {
             position: absolute;
-            right: 2rem; top: 2rem;
+            right: 2rem;
+            top: 2rem;
             color: var(--text-muted);
             font-size: 2rem;
             line-height: 1;
+            font-weight: 300;
             cursor: pointer;
+            transition: color 0.2s;
         }
 
-        .close-btn:hover { color: var(--risk-critical); }
+        .close-btn:hover {
+            color: var(--risk-critical);
+        }
 
         .full-text-container {
             background: rgba(0, 0, 0, 0.15);
@@ -856,6 +974,7 @@
             margin: 1.5rem 0 2.5rem;
             line-height: 1.8;
             border: 1px solid var(--border-glass);
+            font-size: 1.05rem;
         }
 
         [data-theme="light"] .full-text-container {
@@ -868,22 +987,54 @@
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             border-radius: 8px 12px 12px 8px;
-            border: 1px solid var(--border-glass);
+            border-top: 1px solid var(--border-glass);
+            border-right: 1px solid var(--border-glass);
+            border-bottom: 1px solid var(--border-glass);
         }
 
         [data-theme="light"] .risk-detail-card {
             background: rgba(255, 255, 255, 0.7);
         }
 
+        .mt-4 {
+            margin-top: 2rem;
+        }
+
         /* Animations */
         @keyframes fadeScale {
-            from { opacity: 0; transform: scale(0.97) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.97) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         @keyframes slideInBottom {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(30px);
+            }
         }
 
         /* Theme Toggle */
@@ -905,43 +1056,72 @@
             height: 26px;
         }
 
-        .switch input { opacity: 0; width: 0; height: 0; }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
         .slider {
-            position: absolute; cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: rgba(255, 255, 255, 0.1);
-            transition: .4s;
+            transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid var(--border-glass);
-            border-radius: 34px;
         }
 
-        [data-theme="light"] .slider { background-color: rgba(0, 0, 0, 0.1); }
+        [data-theme="light"] .slider {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
 
         .slider:before {
-            position: absolute; content: "";
-            height: 18px; width: 18px;
-            left: 3px; bottom: 3px;
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
             background-color: var(--text-main);
-            transition: .4s;
+            transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
-        input:checked + .slider {
+        input:checked+.slider {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
 
-        input:checked + .slider:before {
+        input:checked+.slider:before {
             transform: translateX(24px);
             background-color: #fff;
         }
 
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
         ::-webkit-scrollbar-thumb {
             background: rgba(148, 163, 184, 0.3);
             border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.5);
         }
     </style>
 </head>
@@ -952,7 +1132,8 @@
         <aside class="sidebar glass-panel">
             <div class="logo" style="cursor: pointer;" onclick="window.location.href='index.html'">
                 <div class="logo-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                     </svg>
                 </div>
@@ -961,7 +1142,8 @@
 
             <nav class="nav-menu">
                 <a href="#" class="nav-item active" data-view="upload-view">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                         <polyline points="14 2 14 8 20 8"></polyline>
                         <line x1="12" y1="18" x2="12" y2="12"></line>
@@ -970,14 +1152,16 @@
                     Upload Contract
                 </a>
                 <a href="#" class="nav-item" data-view="history-view">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
                     History
                 </a>
                 <a href="#" class="nav-item" data-view="analysis-view" id="nav-analysis" style="display: none;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
@@ -985,10 +1169,15 @@
                 </a>
             </nav>
 
-            <div id="user-profile" style="margin-top: auto; padding: 1.5rem 0.5rem; border-top: 1px solid var(--border-glass); display: flex; align-items: center; gap: 0.75rem;">
-                <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; font-size: 0.9rem;" id="user-avatar">?</div>
+            <div id="user-profile"
+                style="margin-top: auto; padding: 1.5rem 0.5rem; border-top: 1px solid var(--border-glass); display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; font-size: 0.9rem;"
+                    id="user-avatar">
+                    ?
+                </div>
                 <div style="flex: 1; min-width: 0;">
-                    <p style="font-size: 0.85rem; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="user-email-display">Loading...</p>
+                    <p style="font-size: 0.85rem; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                        id="user-email-display">Loading...</p>
                     <p style="font-size: 0.7rem; color: var(--text-muted);">Standard Plan</p>
                 </div>
             </div>
@@ -1003,7 +1192,8 @@
 
             <div style="margin-top: 1rem; padding: 1rem 0; border-top: 1px solid var(--border-glass);">
                 <a href="#" class="nav-item" id="btn-logout" style="color: var(--risk-critical) !important;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                         <polyline points="16 17 21 12 16 7"></polyline>
                         <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -1019,12 +1209,14 @@
             <section id="upload-view" class="view-section active">
                 <header>
                     <h1>Analyze New Contract</h1>
-                    <p>Harness the power of Legal AI to automatically identify and extract risk clauses from your documents.</p>
+                    <p>Harness the power of Legal AI to automatically identify and extract risk clauses from your
+                        documents.</p>
                 </header>
 
                 <div class="upload-container glass-panel" id="drop-zone">
                     <div class="upload-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="17 8 12 3 7 8"></polyline>
                             <line x1="12" y1="3" x2="12" y2="15"></line>
@@ -1034,12 +1226,19 @@
                     <p>Supported formats: PDF, DOCX, TXT (Maximum file size: 16MB)</p>
                     <input type="file" id="file-input" accept=".pdf,.docx,.txt" hidden>
                     <button class="btn primary" onclick="document.getElementById('file-input').click()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>
                         Browse Files
                     </button>
                 </div>
 
                 <div id="upload-progress" class="progress-container hidden">
-                    <div class="uploading-text">Analyzing your document intelligently... (<span id="progress-percent">0</span>%)</div>
+                    <div class="uploading-text">Analyzing your document intelligently... (<span
+                            id="progress-percent">0</span>%)</div>
                     <div class="progress-bar">
                         <div class="progress-fill" id="progress-fill"></div>
                     </div>
@@ -1065,8 +1264,22 @@
                         <p id="analysis-status">Status: <span class="badge">Processing</span></p>
                     </div>
                     <div style="display: flex; gap: 1rem;">
-                        <button class="btn primary" id="btn-email-report">Email Report</button>
-                        <button class="btn secondary" id="btn-back">Back</button>
+                        <button class="btn primary" id="btn-email-report">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Email Report
+                        </button>
+                        <button class="btn secondary" id="btn-back">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="19" y1="12" x2="5" y2="12"></line>
+                                <polyline points="12 19 5 12 12 5"></polyline>
+                            </svg>
+                            Back
+                        </button>
                     </div>
                 </header>
 
@@ -1078,6 +1291,7 @@
 
                 <div id="tab-dashboard" class="tab-content active">
                     <div class="dashboard-grid">
+                        <!-- Summary Cards -->
                         <div class="summary-cards">
                             <div class="glass-panel stats-card">
                                 <h4>Total Clauses</h4>
@@ -1093,6 +1307,7 @@
                             </div>
                         </div>
 
+                        <!-- Charts -->
                         <div class="charts-container glass-panel">
                             <div class="chart-wrapper">
                                 <canvas id="riskChart"></canvas>
@@ -1103,23 +1318,30 @@
                         </div>
                     </div>
 
+                    <!-- Clauses Sections -->
                     <div class="clauses-container glass-panel">
                         <h3>Extracted Clauses by Category</h3>
-                        <div id="clauses-grouped-container"></div>
+                        <div id="clauses-grouped-container">
+                            <!-- Populated via JS grouped by clause type -->
+                        </div>
                     </div>
-                </div>
+                </div> <!-- End tab-dashboard -->
 
                 <div id="tab-document" class="tab-content">
                     <div class="glass-panel document-viewer">
-                        <div class="document-page" id="full-document-viewer"></div>
+                        <div class="document-page" id="full-document-viewer">
+                            <!-- Populated via JS -->
+                        </div>
                     </div>
                 </div>
 
                 <div id="tab-comparison" class="tab-content">
                     <div class="clauses-container glass-panel">
                         <h3>Standard Clause Comparison</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 2rem;">Review how your document's extracted clauses differ from industry-standard baselines. <strong>You can edit the standard baselines directly to update your templates!</strong></p>
-                        <div id="comparison-container"></div>
+                        <p style="color: var(--text-muted); margin-bottom: 2rem;">Review how your document's extracted clauses differ from industry-standard baselines.</p>
+                        <div id="comparison-container">
+                            <!-- Populated via JS -->
+                        </div>
                     </div>
                 </div>
 
@@ -1127,7 +1349,9 @@
                 <div id="risk-modal" class="modal">
                     <div class="modal-content">
                         <span class="close-btn">&times;</span>
-                        <h2 id="modal-clause-type" style="font-size: 2rem; margin-bottom: 0.5rem; background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Clause Details</h2>
+                        <h2 id="modal-clause-type"
+                            style="font-size: 2rem; margin-bottom: 0.5rem; background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                            Clause Details</h2>
                         <div class="full-text-container" id="modal-full-text"></div>
                         <h3 class="mt-4" style="margin-bottom: 1.5rem; font-size: 1.5rem;">Risk Flags Detected</h3>
                         <div id="modal-risks-container"></div>
@@ -1137,6 +1361,7 @@
         </main>
     </div>
 
+    <!-- Toast Notifications -->
     <div id="toast-container" class="toast-container"></div>
 
     <script>
@@ -1150,20 +1375,27 @@
         };
 
         const API_BASE = "https://my-logic-production.up.railway.app/api";
+        // State
         let currentContractId = null;
         let charts = {};
 
+        // DOM Elements
         const views = document.querySelectorAll('.view-section');
         const navItems = document.querySelectorAll('.nav-item');
         const themeSwitch = document.getElementById('theme-switch');
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
 
+        // Event Listeners
         document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication
             const token = localStorage.getItem('token');
+            // Allow viewing template without token for preview purposes (mock condition added)
             if (!token && window.location.href.indexOf('file') === -1) {
+                // In a real app this forces auth.html
                 // window.location.href = 'auth.html'; 
             }
+
             initNavigation();
             initTheme();
             initDragAndDrop();
@@ -1171,6 +1403,8 @@
             initUserProfile();
             initTabs();
             initEmailReportButton();
+
+            // Load history initially
             loadHistory();
         });
 
@@ -1200,6 +1434,7 @@
 
         async function initUserProfile() {
             let email = localStorage.getItem('userEmail');
+
             if (!email) {
                 try {
                     const res = await authFetch(`${API_BASE}/auth/current-user`);
@@ -1210,8 +1445,11 @@
                             localStorage.setItem('userEmail', email);
                         }
                     }
-                } catch (err) {}
+                } catch (err) {
+                    // Silently continue with fallback user profile
+                }
             }
+
             if (email) {
                 document.getElementById('user-email-display').innerText = email;
                 document.getElementById('user-avatar').innerText = email.charAt(0).toUpperCase();
@@ -1221,6 +1459,7 @@
             }
         }
 
+        // Helper to simulate a Response object when the backend is unreachable
         function createMockResponse(body, status = 200) {
             return {
                 ok: status >= 200 && status < 300,
@@ -1229,22 +1468,59 @@
             };
         }
 
+        // Intercept API calls and provide mock data to make the UI fully functional
+        // when the backend is down or CORS issues prevent access in this canvas.
         function getMockResponse(url, options) {
             const method = options.method || 'GET';
-            if (url.includes('/auth/current-user')) return createMockResponse({ email: 'demo.user@company.com' });
-            if (url.includes('/contracts/upload')) return createMockResponse({ contract_id: Math.floor(Math.random() * 1000) });
-            if (url.includes('/analyze')) return createMockResponse({ success: true });
-            if (url.includes('/email-report')) return createMockResponse({ success: true, message: "Email sent successfully" });
+
+            if (url.includes('/auth/current-user')) {
+                return createMockResponse({ email: 'demo.user@company.com' });
+            }
+            if (url.includes('/contracts/upload')) {
+                return createMockResponse({ contract_id: Math.floor(Math.random() * 1000) });
+            }
+            if (url.includes('/analyze')) {
+                return createMockResponse({ success: true });
+            }
+            // Mock Email Endpoint
+            if (url.includes('/email-report')) {
+                return createMockResponse({ success: true, message: "Email sent successfully" });
+            }
             if (url.includes('/analysis/') && url.includes('/summary')) {
                 return createMockResponse({
                     filename: "Demo_Contract_Analysis.pdf",
                     status: "completed",
                     clauses: [
-                        { segment_index: 1, clause_type: "confidentiality", text: "The Receiving Party shall maintain the Confidential Information in strict confidence and shall not disclose it in perpetuity.", risks: [{ severity: "high", category: "term_duration", description: "Perpetual confidentiality is generally unenforceable and poses long-term risk.", confidence: 0.95 }] },
-                        { segment_index: 2, clause_type: "limitation_of_liability", text: "Vendor's liability under this agreement shall not exceed the sum of fifty dollars ($50.00).", risks: [{ severity: "critical", category: "liability_cap", description: "Liability cap is extremely low and may not cover actual damages in case of breach.", confidence: 0.88 }] },
-                        { segment_index: 3, clause_type: "termination", text: "Customer may terminate this agreement at any time for convenience with 5 days notice.", risks: [{ severity: "medium", category: "notice_period", description: "5 days notice for termination is unusually short and may disrupt operations.", confidence: 0.75 }] },
-                        { segment_index: 4, clause_type: "governing_law", text: "This Agreement shall be governed by the laws of the State of Delaware.", risks: [] },
-                        { segment_index: 5, clause_type: "indemnification", text: "Each party shall indemnify the other party for any claims arising out of gross negligence.", risks: [] }
+                        {
+                            segment_index: 1,
+                            clause_type: "confidentiality",
+                            text: "The Receiving Party shall maintain the Confidential Information in strict confidence and shall not disclose it in perpetuity.",
+                            risks: [{ severity: "high", category: "term_duration", description: "Perpetual confidentiality is generally unenforceable and poses long-term risk.", confidence: 0.95 }]
+                        },
+                        {
+                            segment_index: 2,
+                            clause_type: "limitation_of_liability",
+                            text: "Vendor's liability under this agreement shall not exceed the sum of fifty dollars ($50.00).",
+                            risks: [{ severity: "critical", category: "liability_cap", description: "Liability cap is extremely low and may not cover actual damages in case of breach.", confidence: 0.88 }]
+                        },
+                        {
+                            segment_index: 3,
+                            clause_type: "termination",
+                            text: "Customer may terminate this agreement at any time for convenience with 5 days notice.",
+                            risks: [{ severity: "medium", category: "notice_period", description: "5 days notice for termination is unusually short and may disrupt operations.", confidence: 0.75 }]
+                        },
+                        {
+                            segment_index: 4,
+                            clause_type: "governing_law",
+                            text: "This Agreement shall be governed by the laws of the State of Delaware.",
+                            risks: []
+                        },
+                        {
+                            segment_index: 5,
+                            clause_type: "indemnification",
+                            text: "Each party shall indemnify the other party for any claims arising out of gross negligence.",
+                            risks: []
+                        }
                     ]
                 });
             }
@@ -1254,42 +1530,70 @@
                     { id: 102, filename: "NDA_Acme_Corp.docx", upload_date: new Date(Date.now() - 86400000).toISOString(), status: "completed" }
                 ]);
             }
-            if (url.includes('/contracts/') && method === 'DELETE') return createMockResponse({ success: true });
+            if (url.includes('/contracts/') && method === 'DELETE') {
+                return createMockResponse({ success: true });
+            }
+            
             return createMockResponse({ error: "Not found" }, 404);
         }
 
         async function authFetch(url, options = {}) {
             const token = localStorage.getItem('token');
-            const defaultHeaders = { 'Authorization': `Bearer ${token || 'demo-token'}` };
+            if (!token) {
+                // Return null; 
+            }
+
+            const defaultHeaders = {
+                'Authorization': `Bearer ${token || 'demo-token'}`
+            };
+
+            // If body is not FormData, set Content-Type to JSON
             if (options.body && !(options.body instanceof FormData)) {
                 defaultHeaders['Content-Type'] = 'application/json';
             }
-            const fetchOptions = { ...options, headers: { ...defaultHeaders, ...(options.headers || {}) } };
+
+            const fetchOptions = {
+                ...options,
+                headers: {
+                    ...defaultHeaders,
+                    ...(options.headers || {})
+                }
+            };
 
             try {
                 const response = await fetch(url, fetchOptions);
+
+                // Handle unauthorized or invalid tokens (expired or malformed)
                 if (response.status === 401 || response.status === 422) {
                     localStorage.removeItem('token');
                     window.location.href = 'auth.html';
                     return null;
                 }
+
                 return response;
             } catch (error) {
+                // Return fallback mock data without logging the network error to avoid console clutter
                 return getMockResponse(url, options);
             }
         }
 
+        // Navigation
         function initNavigation() {
             navItems.forEach(item => {
                 const viewId = item.getAttribute('data-view');
+
                 if (viewId) {
                     item.addEventListener('click', (e) => {
                         e.preventDefault();
                         switchView(viewId);
-                        if (viewId === 'history-view') loadHistory();
+
+                        if (viewId === 'history-view') {
+                            loadHistory();
+                        }
                     });
                 }
             });
+
             const btnBack = document.getElementById('btn-back');
             if (btnBack) {
                 btnBack.addEventListener('click', () => {
@@ -1301,6 +1605,7 @@
 
         function switchView(viewId) {
             if (!viewId) return;
+
             const targetView = document.getElementById(viewId);
             if (!targetView) return;
 
@@ -1309,7 +1614,9 @@
 
             navItems.forEach(item => item.classList.remove('active'));
             const activeNav = document.querySelector(`[data-view="${viewId}"]`);
-            if (activeNav) activeNav.classList.add('active');
+            if (activeNav) {
+                activeNav.classList.add('active');
+            }
         }
 
         function initTabs() {
@@ -1326,27 +1633,40 @@
             });
         }
 
+        // Theme
         function initTheme() {
             document.body.setAttribute('data-theme', themeSwitch.checked ? 'dark' : 'light');
+
             themeSwitch.addEventListener('change', (e) => {
                 document.body.setAttribute('data-theme', e.target.checked ? 'dark' : 'light');
                 updateChartsTheme();
             });
         }
 
+        // Drag & Drop
         function initDragAndDrop() {
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);
+                dropZone.addEventListener(eventName, preventDefaults, false);
             });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
             ['dragenter', 'dragover'].forEach(eventName => {
                 dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
             });
+
             ['dragleave', 'drop'].forEach(eventName => {
                 dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
             });
+
             dropZone.addEventListener('drop', (e) => {
-                if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+                let files = e.dataTransfer.files;
+                if (files.length) handleFile(files[0]);
             });
+
             fileInput.addEventListener('change', function () {
                 if (this.files.length) handleFile(this.files[0]);
             });
@@ -1356,28 +1676,43 @@
             const validTypes = ['.pdf', '.docx', '.txt'];
             const extension = '.' + file.name.split('.').pop().toLowerCase();
 
-            if (!validTypes.includes(extension)) return showToast('Invalid file type.', 'error');
-            if (file.size > 16 * 1024 * 1024) return showToast('File size exceeds 16MB.', 'error');
-            
+            if (!validTypes.includes(extension)) {
+                showToast('Invalid file type. Please upload PDF, DOCX, or TXT.', 'error');
+                return;
+            }
+
+            if (file.size > 16 * 1024 * 1024) {
+                showToast('File size exceeds 16MB limit.', 'error');
+                return;
+            }
+
             uploadFile(file);
         }
 
         async function uploadFile(file) {
             const formData = new FormData();
             formData.append('file', file);
+
             document.getElementById('upload-progress').classList.remove('hidden');
             document.getElementById('progress-fill').style.width = '30%';
             document.getElementById('progress-percent').innerText = '30';
 
             try {
-                const res = await authFetch(`${API_BASE}/contracts/upload`, { method: 'POST', body: formData });
+                const res = await authFetch(`${API_BASE}/contracts/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
                 if (!res) return;
+
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error);
 
                 document.getElementById('progress-fill').style.width = '60%';
                 document.getElementById('progress-percent').innerText = '60';
+
                 startAnalysis(data.contract_id);
+
             } catch (err) {
                 showToast(err.message, 'error');
                 document.getElementById('upload-progress').classList.add('hidden');
@@ -1390,7 +1725,9 @@
                     method: 'POST',
                     body: JSON.stringify({ contract_id: contractId })
                 });
+
                 if (!res) return;
+
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error);
 
@@ -1400,16 +1737,22 @@
                 setTimeout(() => {
                     document.getElementById('upload-progress').classList.add('hidden');
                     showToast('Analysis complete!', 'success');
+                    // Automatically load the analysis AND trigger the auto-email flag
                     loadAnalysis(contractId, true);
                 }, 1000);
+
             } catch (err) {
                 showToast(err.message, 'error');
                 document.getElementById('upload-progress').classList.add('hidden');
             }
         }
 
+        // Email Feature Function
         async function sendEmailReport(contractId, email) {
-            if (!email || email === 'Loading...' || email === 'User Account') email = 'demo.user@company.com';
+            if (!email || email === 'Loading...' || email === 'User Account') {
+                email = 'demo.user@company.com'; // Default mock email
+            }
+
             showToast(`Sending analysis report to ${email}...`, 'success');
 
             try {
@@ -1417,10 +1760,16 @@
                     method: 'POST',
                     body: JSON.stringify({ email: email })
                 });
+
+                // Add artificial delay to feel like email is sending
                 setTimeout(() => {
-                    if (res && res.ok) showToast(`Report successfully sent to ${email}!`, 'success');
-                    else showToast(`Failed to send email to ${email}`, 'error');
+                    if (res && res.ok) {
+                        showToast(`Report successfully sent to ${email}!`, 'success');
+                    } else {
+                        showToast(`Failed to send email to ${email}`, 'error');
+                    }
                 }, 1500);
+
             } catch (err) {
                 showToast('Network error while sending email', 'error');
             }
@@ -1433,13 +1782,18 @@
             try {
                 const res = await authFetch(`${API_BASE}/contracts`);
                 if (!res) return;
+
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.error || 'Failed to load history');
+
+                if (!res.ok) {
+                    throw new Error(data.error || 'Failed to load history');
+                }
 
                 if (data.length === 0) {
                     container.innerHTML = '<p style="text-align:center; padding: 2rem; color: var(--text-muted);">No contracts analyzed yet.</p>';
                     return;
                 }
+
                 container.innerHTML = '';
                 data.forEach(contract => {
                     const date = new Date(contract.upload_date).toLocaleDateString();
@@ -1452,9 +1806,14 @@
                         </div>
                         <div class="history-actions">
                             <button class="btn primary" onclick="loadAnalysis(${contract.id})">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> View
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                View
                             </button>
-                            ${contract.status !== 'analyzing' ? `<button class="btn secondary" onclick="deleteContract(${contract.id})" style="color: var(--risk-critical); border-color: rgba(255, 71, 87, 0.2);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg> Delete</button>` : ''}
+                            ${contract.status !== 'analyzing' ? `
+                            <button class="btn secondary" onclick="deleteContract(${contract.id})" style="color: var(--risk-critical); border-color: rgba(255, 71, 87, 0.2);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                Delete
+                            </button>` : ''}
                         </div>
                     `;
                     container.appendChild(div);
@@ -1489,19 +1848,24 @@
             try {
                 const res = await authFetch(`${API_BASE}/analysis/${id}/summary`);
                 if (!res) return;
+
                 const data = await res.json();
+
                 if (!res.ok) throw new Error(data.error);
 
                 document.getElementById('analysis-filename').innerText = data.filename;
-                document.getElementById('analysis-status').innerHTML = `Status: <span class="badge ${data.status}">${data.status}</span>`;
+                const statusEl = document.getElementById('analysis-status');
+                statusEl.innerHTML = `Status: <span class="badge ${data.status}">${data.status}</span>`;
 
                 if (data.status === 'completed') {
                     renderDashboard(data.clauses);
+                    
+                    // Trigger Automatic Email if passed from startAnalysis
                     if (autoEmail) {
                         setTimeout(() => {
                             const userEmail = localStorage.getItem('userEmail') || document.getElementById('user-email-display').innerText;
                             sendEmailReport(id, userEmail);
-                        }, 500);
+                        }, 500); // Small delay to let UI render before showing email sending toast
                     }
                 }
             } catch (err) {
@@ -1510,6 +1874,7 @@
         }
 
         function renderDashboard(clauses) {
+            // Stats
             let highRiskCount = 0;
             let medRiskCount = 0;
 
@@ -1532,11 +1897,17 @@
             const groupedClauses = {};
 
             clauses.forEach((c) => {
-                if (c.risks.length === 0) riskData.low += 1;
-                else c.risks.forEach(r => { riskData[r.severity] = (riskData[r.severity] || 0) + 1; });
-                
+                if (c.risks.length === 0) {
+                    riskData.low += 1;
+                } else {
+                    c.risks.forEach(r => {
+                        riskData[r.severity] = (riskData[r.severity] || 0) + 1;
+                    });
+                }
                 typeData[c.clause_type] = (typeData[c.clause_type] || 0) + 1;
-                if (!groupedClauses[c.clause_type]) groupedClauses[c.clause_type] = [];
+                if (!groupedClauses[c.clause_type]) {
+                    groupedClauses[c.clause_type] = [];
+                }
                 groupedClauses[c.clause_type].push(c);
             });
 
@@ -1565,9 +1936,13 @@
                 typeClauses.forEach((c, idx) => {
                     const tr = document.createElement('tr');
                     let riskHtml = '';
-                    if (c.risks.length === 0) riskHtml = '<span class="risk-badge low">CLEAN</span>';
-                    else c.risks.forEach(r => { riskHtml += `<span class="risk-badge ${r.severity}">${r.severity}</span>`; });
-                    
+                    if (c.risks.length === 0) {
+                        riskHtml = '<span class="risk-badge low">CLEAN</span>';
+                    } else {
+                        c.risks.forEach(r => {
+                            riskHtml += `<span class="risk-badge ${r.severity}">${r.severity}</span>`;
+                        });
+                    }
                     tr.innerHTML = `
                         <td>${idx + 1}</td>
                         <td><div class="text-snippet" style="max-width: 600px;">${c.text}</div></td>
@@ -1590,7 +1965,10 @@
                     if (r.severity === 'medium') score = 1;
                     if (r.severity === 'high') score = 2;
                     if (r.severity === 'critical') score = 3;
-                    if (score > riskScore) { riskScore = score; highestRisk = r.severity; }
+                    if (score > riskScore) {
+                        riskScore = score;
+                        highestRisk = r.severity;
+                    }
                 });
                 const p = document.createElement('span');
                 p.className = 'doc-clause';
@@ -1604,7 +1982,6 @@
             renderComparison(clauses);
         }
 
-        // Updated Render Comparison for Customizable Baselines
         function renderComparison(clauses) {
             const container = document.getElementById('comparison-container');
             container.innerHTML = '';
@@ -1645,27 +2022,15 @@
                         <div class="comparison-col standard">
                             <h4>
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                Standard Baseline (Customizable)
+                                Standard Baseline
                             </h4>
-                            <textarea class="comparison-textarea" id="textarea-${c.clause_type}">${standardText}</textarea>
-                            <div style="margin-top: 1rem; text-align: right;">
-                                <button class="btn secondary btn-sm" onclick="saveStandardClause('${c.clause_type}')">Save Customization</button>
-                            </div>
+                            <div class="comparison-text">"${standardText}"</div>
                         </div>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
-
-        // Feature: Globally accessible function to save customized clauses
-        window.saveStandardClause = function(clauseType) {
-            const textarea = document.getElementById(`textarea-${clauseType}`);
-            if (textarea) {
-                STANDARD_CLAUSES[clauseType] = textarea.value.trim();
-                showToast(`Custom standard clause for '${clauseType.replace(/_/g, ' ')}' saved successfully!`, 'success');
-            }
-        };
 
         function renderCharts(riskData, typeData) {
             const isDark = document.body.getAttribute('data-theme') === 'dark';
@@ -1686,7 +2051,8 @@
                     }]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: false,
+                    responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: { position: 'right', labels: { color: textColor, padding: 20, font: { family: 'Plus Jakarta Sans' } } },
                         title: { display: true, text: 'Risk Distribution', color: textColor, font: { size: 18, family: 'Playfair Display', weight: 600 } }
@@ -1706,11 +2072,13 @@
                         label: 'Clauses',
                         data: Object.values(typeData),
                         backgroundColor: pieColors.slice(0, typeLabels.length),
-                        borderWidth: 1, borderColor: isDark ? '#060913' : '#ffffff'
+                        borderWidth: 1,
+                        borderColor: isDark ? '#060913' : '#ffffff'
                     }]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: false,
+                    responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: { position: 'right', labels: { color: textColor, padding: 15, font: { family: 'Plus Jakarta Sans', size: 11 } } },
                         title: { display: true, text: 'Clause Types', color: textColor, font: { size: 18, family: 'Playfair Display', weight: 600 } }
@@ -1727,7 +2095,10 @@
 
         const riskModal = document.getElementById('risk-modal');
         document.querySelector('.close-btn').onclick = () => riskModal.style.display = 'none';
-        window.onclick = (e) => { if (e.target == riskModal) riskModal.style.display = 'none'; }
+
+        window.onclick = (e) => {
+            if (e.target == riskModal) riskModal.style.display = 'none';
+        }
 
         function showModal(clause) {
             document.getElementById('modal-clause-type').innerText = clause.clause_type.replace(/_/g, ' ').toUpperCase();
