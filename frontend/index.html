@@ -244,25 +244,6 @@
 
         .btn.secondary:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-3px); }
 
-        /* ✅ Email button specific style */
-        .btn.email-btn {
-            background: rgba(168, 85, 247, 0.1);
-            color: #a855f7;
-            border: 1px solid rgba(168, 85, 247, 0.4);
-        }
-        .btn.email-btn:hover {
-            background: rgba(168, 85, 247, 0.2);
-            border-color: rgba(168, 85, 247, 0.7);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
-        }
-        .btn.email-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
         .progress-container {
             margin-top: 3rem;
             max-width: 600px;
@@ -662,7 +643,7 @@
                         <p id="analysis-status">Status: <span class="badge">Processing</span></p>
                     </div>
 
-                    <!-- ✅ 3 BUTTONS: Download PDF | Send to Email | Back -->
+                    <!-- Header Buttons -->
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
 
                         <!-- Button 1: Download PDF Report -->
@@ -675,16 +656,7 @@
                             Download PDF Report
                         </button>
 
-                        <!-- Button 2: ✅ NEW — Send Report to Email -->
-                        <button class="btn email-btn" id="btn-send-email-report">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                <polyline points="22,6 12,13 2,6"></polyline>
-                            </svg>
-                            Send Report to Email
-                        </button>
-
-                        <!-- Button 3: Back -->
+                        <!-- Button 2: Back -->
                         <button class="btn secondary" id="btn-back">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -794,7 +766,6 @@
             initUserProfile();
             initTabs();
             initDownloadReportButton();
-            initSendEmailButton(); // ✅ NEW — wires up the Send Report to Email button
             loadHistory();
         });
 
@@ -821,58 +792,6 @@
                     }
                 });
             }
-        }
-
-        // ✅ NEW: Wires up the "Send Report to Email" button
-        function initSendEmailButton() {
-            const emailBtn = document.getElementById('btn-send-email-report');
-            if (!emailBtn) return;
-
-            emailBtn.addEventListener('click', async () => {
-                if (!currentContractId) {
-                    showToast('No contract loaded.', 'error');
-                    return;
-                }
-
-                // Show loading / spinner state
-                emailBtn.disabled = true;
-                emailBtn.innerHTML = `
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round"
-                        style="animation: spin 1s linear infinite;">
-                        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-                    </svg>
-                    Sending...
-                `;
-
-                try {
-                    const res = await authFetch(
-                        `${API_BASE}/contracts/${currentContractId}/email`,
-                        { method: 'POST' }
-                    );
-
-                    if (res && res.ok) {
-                        const userEmail = localStorage.getItem('userEmail') || 'your email';
-                        showToast(`📄 Report sent successfully to ${userEmail}`, 'success');
-                    } else {
-                        const data = res ? await res.json() : {};
-                        showToast(data.error || 'Failed to send email.', 'error');
-                    }
-                } catch (err) {
-                    showToast('Network error while sending email.', 'error');
-                } finally {
-                    // Always restore the button
-                    emailBtn.disabled = false;
-                    emailBtn.innerHTML = `
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                            <polyline points="22,6 12,13 2,6"></polyline>
-                        </svg>
-                        Send Report to Email
-                    `;
-                }
-            });
         }
 
         // Generate and download PDF using html2pdf.js
@@ -1019,8 +938,7 @@
             if (url.includes('/auth/current-user')) return createMockResponse({ email: 'john.doe@corporate.com' });
             if (url.includes('/contracts/upload')) return createMockResponse({ contract_id: Math.floor(Math.random() * 1000) });
             if (url.includes('/analyze')) return createMockResponse({ success: true });
-            if (url.includes('/email') && method === 'POST') return createMockResponse({ success: true, message: "Email Sent Successfully" });
-
+            
             if (url.includes('/analysis/') && url.includes('/summary')) {
                 return createMockResponse({
                     filename: "Demo_Contract_Analysis.pdf",
@@ -1152,27 +1070,11 @@
                 setTimeout(() => {
                     document.getElementById('upload-progress').classList.add('hidden');
                     showToast('Analysis complete!', 'success');
-                    sendEmailReport(contractId); // Auto-send on upload
                     loadAnalysis(contractId);
                 }, 1000);
             } catch (err) {
                 showToast(err.message, 'error');
                 document.getElementById('upload-progress').classList.add('hidden');
-            }
-        }
-
-        // Auto-sends email after upload completes
-        async function sendEmailReport(contractId) {
-            try {
-                const res = await authFetch(`${API_BASE}/contracts/${contractId}/email`, { method: 'POST' });
-                if (res && res.ok) {
-                    const userEmail = localStorage.getItem('userEmail') || 'your respected email address';
-                    setTimeout(() => {
-                        showToast(`📄 Document report has been sent to ${userEmail}`, 'success');
-                    }, 1500);
-                }
-            } catch (err) {
-                console.warn('Failed to auto-send email report', err);
             }
         }
 
