@@ -5,122 +5,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Contract AI</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .auth-container {
+        :root {
+            /* Color Palette */
+            --bg-dark: #09090e;
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent-gradient: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+            
+            /* Text Colors */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            
+            /* Glass Effects */
+            --glass-bg: rgba(20, 21, 31, 0.65);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --input-bg: rgba(255, 255, 255, 0.03);
+            --input-bg-focus: rgba(255, 255, 255, 0.06);
+            
+            /* Shadows & Transitions */
+            --glow-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+            --transition-all: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            padding: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .auth-card {
-            width: 100%;
-            max-width: 480px;
-            padding: 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .auth-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .auth-header p {
-            color: var(--text-muted);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 1rem 1.25rem;
-            border-radius: 12px;
-            border: 1px solid var(--border-glass);
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-main);
-            font-family: inherit;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        [data-theme="light"] .form-input {
-            background: rgba(0, 0, 0, 0.02);
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            background: rgba(255, 255, 255, 0.06);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-
-        .auth-btn {
-            width: 100%;
-            padding: 1rem;
-            margin-top: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .auth-switch {
-            text-align: center;
-            margin-top: 2rem;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .auth-switch a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        .auth-switch a:hover {
-            color: var(--primary-hover);
-        }
-
-        /* Form Animation Transition */
-        #register-form {
-            display: none;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         /* Abstract Background Elements */
@@ -129,46 +52,296 @@
             border-radius: 50%;
             filter: blur(80px);
             z-index: 0;
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
         .orb-1 {
-            width: 400px;
-            height: 400px;
-            background: #6366f1;
-            top: -100px;
-            left: -100px;
-            animation: float 10s ease-in-out infinite alternate;
+            width: 500px;
+            height: 500px;
+            background: #4338ca;
+            top: -150px;
+            left: -150px;
+            animation: float 12s ease-in-out infinite alternate;
         }
 
         .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: #9333ea;
+            bottom: -100px;
+            right: -100px;
+            animation: float 10s ease-in-out infinite alternate-reverse;
+        }
+
+        .orb-3 {
             width: 300px;
             height: 300px;
-            background: #ec4899;
-            bottom: -50px;
-            right: -50px;
-            animation: float 8s ease-in-out infinite alternate-reverse;
+            background: #0ea5e9;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: floatCenter 15s ease-in-out infinite alternate;
+            opacity: 0.3;
         }
 
         @keyframes float {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 80px) scale(1.1); }
+        }
 
-            100% {
-                transform: translate(30px, 50px) scale(1.1);
+        @keyframes floatCenter {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            100% { transform: translate(-30%, -60%) scale(1.2); }
+        }
+
+        /* Container & Card */
+        .auth-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 440px;
+            padding: 2rem;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Header */
+        .auth-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-logo svg {
+            width: 48px;
+            height: 48px;
+            color: var(--primary-color);
+            filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+        }
+
+        .brand-text {
+            font-size: 1.85rem;
+            font-weight: 800;
+            font-style: italic;
+            background: linear-gradient(135deg, #38bdf8 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.05em;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .auth-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            color: var(--text-muted);
+            width: 20px;
+            height: 20px;
+            transition: var(--transition-all);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+            background: var(--input-bg);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: var(--transition-all);
+        }
+
+        .form-input::placeholder {
+            color: rgba(148, 163, 184, 0.5);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: var(--input-bg-focus);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        .form-input:focus + .input-icon,
+        .input-wrapper:focus-within .input-icon {
+            color: var(--primary-color);
+        }
+
+        /* Button */
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            border: none;
+            background: var(--primary-color);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-all);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-btn:hover {
+            background: var(--primary-hover);
+            box-shadow: var(--glow-shadow);
+            transform: translateY(-1px);
+        }
+
+        .auth-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Loading State for Button */
+        .auth-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+        }
+
+        .auth-btn.loading {
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .auth-btn.loading .spinner {
+            display: block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Switch Text */
+        .auth-switch {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .auth-switch a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition-all);
+            margin-left: 0.25rem;
+        }
+
+        .auth-switch a:hover {
+            color: #818cf8;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        /* View Toggling Animations */
+        #register-form {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .glass-panel {
+                padding: 2.5rem 1.5rem;
+                border-radius: 20px;
+            }
+            .auth-header h1 {
+                font-size: 1.75rem;
             }
         }
     </style>
 </head>
 
-<body data-theme="dark">
+<body>
     <!-- Background Decor -->
     <div class="bg-orb orb-1"></div>
     <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
 
     <div class="auth-container">
-        <div class="glass-panel auth-card">
+        <div class="glass-panel">
+            
+            <!-- Shared Logo -->
+            <div class="auth-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span class="brand-text">MY-LogiC</span>
+            </div>
 
             <!-- Login Form -->
             <div id="login-form" class="fade-in">
@@ -176,16 +349,28 @@
                     <h1>Welcome Back</h1>
                     <p>Enter your credentials to access Contract AI.</p>
                 </div>
-                <form id="form-login">
+                <form id="form-login" onsubmit="handleAuth(event, 'login')">
                     <div class="form-group">
                         <label>Email Address</label>
-                        <input type="email" id="login-email" class="form-input" placeholder="you@example.com" required>
+                        <div class="input-wrapper">
+                            <input type="email" id="login-email" class="form-input" placeholder="you@example.com" required>
+                            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label style="margin-bottom: 0;">Password</label>
+                            <a href="#" style="color: var(--primary-color); font-size: 0.8rem; text-decoration: none;">Forgot?</a>
+                        </div>
+                        <div class="input-wrapper">
+                            <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+                            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </div>
                     </div>
-                    <button type="submit" class="btn primary auth-btn">Sign In</button>
+                    <button type="submit" class="auth-btn" id="login-btn">
+                        <span>Sign In</span>
+                        <div class="spinner"></div>
+                    </button>
                 </form>
                 <div class="auth-switch">
                     Don't have an account? <a href="#" onclick="toggleForm('register')">Create one</a>
@@ -198,21 +383,32 @@
                     <h1>Create Account</h1>
                     <p>Join Contract AI to start analyzing documents.</p>
                 </div>
-                <form id="form-register">
+                <form id="form-register" onsubmit="handleAuth(event, 'register')">
                     <div class="form-group">
                         <label>Username</label>
-                        <input type="text" id="reg-username" class="form-input" placeholder="johndoe" required>
+                        <div class="input-wrapper">
+                            <input type="text" id="reg-username" class="form-input" placeholder="johndoe" required>
+                            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Email Address</label>
-                        <input type="email" id="reg-email" class="form-input" placeholder="you@example.com" required>
+                        <div class="input-wrapper">
+                            <input type="email" id="reg-email" class="form-input" placeholder="you@example.com" required>
+                            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" id="reg-password" class="form-input"
-                            placeholder="Choose a strong password" required minlength="6">
+                        <div class="input-wrapper">
+                            <input type="password" id="reg-password" class="form-input" placeholder="Choose a strong password" required minlength="6">
+                            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </div>
                     </div>
-                    <button type="submit" class="btn primary auth-btn">Sign Up</button>
+                    <button type="submit" class="auth-btn" id="reg-btn">
+                        <span>Sign Up</span>
+                        <div class="spinner"></div>
+                    </button>
                 </form>
                 <div class="auth-switch">
                     Already have an account? <a href="#" onclick="toggleForm('login')">Sign in</a>
@@ -222,28 +418,70 @@
         </div>
     </div>
 
-    <!-- Toast Notifications (reusing from app UI) -->
-    <div id="toast-container" class="toast-container"></div>
-
-    <script src="js/auth.js"></script>
     <script>
         function toggleForm(type) {
             const login = document.getElementById('login-form');
             const register = document.getElementById('register-form');
 
+            // Reset forms
+            document.getElementById('form-login').reset();
+            document.getElementById('form-register').reset();
+
             if (type === 'register') {
                 login.style.display = 'none';
                 login.classList.remove('fade-in');
+                
                 register.style.display = 'block';
+                // Trigger reflow to restart animation
+                void register.offsetWidth;
                 register.classList.add('fade-in');
+                
                 document.title = 'Register - Contract AI';
             } else {
                 register.style.display = 'none';
                 register.classList.remove('fade-in');
+                
                 login.style.display = 'block';
+                // Trigger reflow to restart animation
+                void login.offsetWidth;
                 login.classList.add('fade-in');
+                
                 document.title = 'Login - Contract AI';
             }
+        }
+
+        function handleAuth(event, type) {
+            event.preventDefault();
+            
+            // Get the corresponding button
+            const btnId = type === 'login' ? 'login-btn' : 'reg-btn';
+            const btn = document.getElementById(btnId);
+            
+            // Add loading state
+            btn.classList.add('loading');
+            
+            // Simulate API Call delay
+            setTimeout(() => {
+                btn.classList.remove('loading');
+                
+                // In a real app, you would redirect or show success message here
+                // For demonstration, we'll just show a visual cue
+                const originalText = btn.querySelector('span').innerText;
+                btn.querySelector('span').innerText = 'Success!';
+                btn.style.background = '#10b981'; // Green color
+                
+                setTimeout(() => {
+                    btn.querySelector('span').innerText = originalText;
+                    btn.style.background = '';
+                    if (type === 'login') {
+                        // window.location.href = '/dashboard.html';
+                        console.log("Redirecting to dashboard...");
+                    } else {
+                        toggleForm('login');
+                    }
+                }, 1500);
+
+            }, 1500);
         }
     </script>
 </body>
