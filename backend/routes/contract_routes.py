@@ -312,11 +312,11 @@ def email_report(contract_id):
 
 
 def _send_analysis_email(to_email, filename, clauses):
-    sender   = os.environ.get("EMAIL_USER")
-    password = os.environ.get("EMAIL_PASS")
+    sender   = os.environ.get("MAIL_USERNAME")
+    password = os.environ.get("MAIL_PASSWORD")
 
     if not sender or not password:
-        raise ValueError("EMAIL_USER or EMAIL_PASS not configured in environment")
+        raise ValueError("MAIL_USERNAME or MAIL_PASSWORD not configured in environment")
 
     # Count risks by severity
     critical = sum(1 for c in clauses for r in c.risk_flags if r.severity == "critical")
