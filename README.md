@@ -64,3 +64,25 @@ Then navigate to `http://localhost:8000` in your browser.
 - **Singleton Model Loading**: The `RiskAnalyzer` preloads the BERT model at startup to avoid reloading it on every request, which is crucial for reasonable API latency.
 - **Clean Architecture**: Services (`clause_extractor.py`, `risk_analyzer.py`), utilities (`file_parser.py`), and routing (`contract_routes.py`) are strictly separated.
 - **Vanilla JS**: The frontend avoids heavy frameworks (React/Vue) to meet the requirement strictly relying on ES6 modularity and lightweight dom updates, while delivering a highly polished aesthetic.
+
+
+#OUTPUT SCREENSHOT
+
+<img width="1919" height="978" alt="image" src="https://github.com/user-attachments/assets/b39e885c-9de1-403f-a560-7bce5974d9fd" />
+
+
+
+<img width="1919" height="996" alt="image" src="https://github.com/user-attachments/assets/6e70333c-e13b-482c-b756-ef33694ce233" />
+
+
+<img width="1916" height="985" alt="image" src="https://github.com/user-attachments/assets/090a96c8-6c8f-4985-bdcf-6e32221bcbdf" />
+
+
+<img width="1916" height="987" alt="image" src="https://github.com/user-attachments/assets/2b52085e-c517-4b68-b205-9e1083e8c744" />
+
+
+<img width="1915" height="977" alt="image" src="https://github.com/user-attachments/assets/ae796b25-875a-41d1-a49b-5b737198da71" />
+
+
+<img width="1917" height="986" alt="image" src="https://github.com/user-attachments/assets/d70cd627-72e2-4144-9ede-d016662cf7ea" />
+
