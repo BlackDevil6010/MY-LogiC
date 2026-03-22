@@ -56,9 +56,11 @@ def create_app():
     with app.app_context():
         try:
             import models.models  # noqa
-            app.logger.info("Creating DB tables (if they don't exist)")
+            app.logger.info("🔥 Dropping all tables (for reset)")
+            db.drop_all()   # optional but ensures clean state
+            app.logger.info("Creating all tables now")
             db.create_all()
-            app.logger.info("Database tables ready")
+            app.logger.info("Database tables created successfully")
         except Exception as e:
             app.logger.exception("Failed to initialize database: %s", e)
     
