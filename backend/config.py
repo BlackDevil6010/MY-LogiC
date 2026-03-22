@@ -12,11 +12,17 @@ class Config:
     if database_url.startswith("postgres://"):
         database_url = database_url.replace("postgres://", "postgresql://", 1)
 
+    # ✅ IMPORTANT: remove ssl from URL if already added
+    database_url = database_url.replace("?sslmode=require", "")
+
     SQLALCHEMY_DATABASE_URI = database_url
 
-    # ✅ THIS IS THE KEY FIX
+    # ✅ THIS IS THE REAL FIX
     SQLALCHEMY_ENGINE_OPTIONS = {
-        "connect_args": {"sslmode": "require"}
+        "pool_pre_ping": True,
+        "connect_args": {
+            "sslmode": "require"
+        }
     }
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
