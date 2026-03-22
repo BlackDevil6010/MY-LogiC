@@ -1,5 +1,5 @@
 // 🔥 Production Backend URL
-const API_BASE = "https://my-logic-production.up.railway.app/api";
+const API_BASE = "https://my-logic.onrender.com/api";
 
 document.addEventListener('DOMContentLoaded', () => {
     // Redirect if already logged in
