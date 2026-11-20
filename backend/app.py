@@ -58,11 +58,10 @@ def create_app():
     with app.app_context():
         try:
             import models.models  # noqa
-            app.logger.info("Initializing database tables...")
             db.create_all()
-            app.logger.info("Database tables initialized successfully")
+            app.logger.info("Database tables initialized successfully on: %s", app.config["SQLALCHEMY_DATABASE_URI"].split("@")[-1])
         except Exception as e:
-            app.logger.exception("Database initialization warning: %s", e)
+            app.logger.exception("Database initialization error: %s", e)
 
     # Register blueprints
     try:
@@ -89,6 +88,7 @@ def create_app():
     def health():
         db_status = "ok"
         db_error = None
+        db_type = "postgresql" if Config.IS_POSTGRES else "sqlite"
         try:
             db.session.execute(text("SELECT 1"))
         except Exception as e:
@@ -99,6 +99,7 @@ def create_app():
         return jsonify({
             "status": "healthy" if db_status == "ok" else "degraded",
             "database": db_status,
+            "database_type": db_type,
             "database_error": db_error,
             "timestamp": datetime.utcnow().isoformat()
         }), status_code
