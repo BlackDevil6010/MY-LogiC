@@ -5,21 +5,20 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from app import create_app
-from models import db
-from models.models import User
+from extensions import db
+from models.models import User, Contract, Clause, RiskFlag, StandardClause
+
 
 def init_database():
     app = create_app()
     with app.app_context():
-        print("Initializing database...")
+        print("Initializing database tables...")
         db.create_all()
         print("Tables created successfully.")
-        
-        # Check if users already exist
-        if User.query.first() is None:
-            print("Database is empty. You can now register through the frontend!")
-        else:
-            print("Database already contains records.")
+
+        user_count = User.query.count()
+        print(f"Database ready. Existing users: {user_count}")
+
 
 if __name__ == "__main__":
     init_database()

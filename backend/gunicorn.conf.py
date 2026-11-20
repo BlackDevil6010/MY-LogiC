@@ -1,0 +1,12 @@
+import multiprocessing
+import os
+
+bind = f"0.0.0.0:{os.environ.get('PORT', '8080')}"
+workers = 2
+threads = 4
+worker_class = "gthread"
+timeout = 120
+keepalive = 5
+accesslog = "-"
+errorlog = "-"
+loglevel = "info"
